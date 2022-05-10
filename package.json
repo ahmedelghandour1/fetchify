@@ -1,0 +1,41 @@
+{
+  "name": "fetchify",
+  "version": "1.0.0",
+  "description": "Universal wrapper for Fetch Method",
+  "main": "./dist/build.common.js",
+  "module": "./dist/build.esm.js",
+  "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "./dist/*"
+  ],
+  "scripts": {
+    "server": "nodemon ./server/index.js",
+    "build": "cross-env NODE_ENV=production tsc && node ./esbuild.config.js",
+    "watch": "cross-env NODE_ENV=development tsc --watch && node ./esbuild.config.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/build.esm.js",
+      "require": "./dist/build.common.js"
+    }
+  },
+  "author": "ahmedElghandour1",
+  "license": "ISC",
+  "dependencies": {
+    "cross-fetch": "^3.1.5",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.14.38",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  }
+}
