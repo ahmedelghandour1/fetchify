@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isBrowser, serializeObject } from './helpers';
+import { isBrowser, nop, serializeObject } from './helpers';
 
 /* ================= START TYPES ================= */
 declare const global: Record<string, unknown>;
@@ -189,7 +189,7 @@ function setFetchAbort(options: RequestInit = {}) {
     return controller;
   }
   return {
-    abort: () => { /* dummy */ },
+    abort: nop,
   };
 }
 

@@ -83,18 +83,18 @@ const build = (params) => {
 
 /** build.common.js */
 build({
-    ...baseConfig('src/index.node.ts'),
+    ...baseConfig('src/platforms/nodejs.ts'),
     ...commonJsBuild()
 })
 
 /** build.umd.js */
 build({
-    ...baseConfig('src/index.ts'),
+    ...baseConfig('src/platforms/browser.ts'),
     ...umdBuild()
 })
 
 /** build.esm.js */
 build({
-    ...baseConfig('src/index.ts'),
+    ...baseConfig('src/platforms/browser.ts'),
     ...esmBuild()
 })

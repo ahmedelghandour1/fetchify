@@ -73,3 +73,6 @@ export function replaceParamsInString(input: string, params: Record<string, stri
   return str;
 }
 
+
+
+export function nop() {}

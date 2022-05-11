@@ -1,20 +1,34 @@
 {
   "name": "fetchify",
   "version": "1.0.0",
-  "description": "Universal wrapper for Fetch Method",
+  "private": false,
+  "description": "Universal wrapper for Fetch API",
   "main": "./dist/build.common.js",
   "module": "./dist/build.esm.js",
   "type": "commonjs",
-  "types": "./dist/types/index.d.ts",
-  "typings": "./dist/types/index.d.ts",
+  "types": "./dist/types/main.d.ts",
+  "typings": "./dist/types/main.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedElghandour1/fetchify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahmedElghandour1/fetchify/issues",
+    "email": "georgian.stan8@gmail.com"
+  },
+  "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
   "sideEffects": false,
   "files": [
     "./dist/*"
   ],
   "scripts": {
     "server": "nodemon ./server/index.js",
-    "build": "cross-env NODE_ENV=production tsc && node ./esbuild.config.js",
-    "watch": "cross-env NODE_ENV=development tsc --watch && node ./esbuild.config.js"
+    "build": "cross-env NODE_ENV=production tsc --emitDeclarationOnly  && node ./esbuild.config.js",
+    "watch": "cross-env NODE_ENV=development tsc --watch && node ./esbuild.config.js",
+    "build:wp": "cross-env NODE_ENV=production webpack --config webpack.config.js --mode production --env production",
+    "watch:wp": "cross-env NODE_ENV=development webpack --watch --config webpack.config.js --mode development --env development",
+    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build"
   },
   "exports": {
     ".": {
@@ -22,17 +36,32 @@
       "require": "./dist/build.common.js"
     }
   },
-  "author": "ahmedElghandour1",
-  "license": "ISC",
+  "author": "Ahmed Elghandour",
+  "keywords": [
+    "fetch",
+    "fetchify",
+    "browser",
+    "node",
+    "nodejs",
+    "fetch wrapper",
+    "uiversal fetch"
+  ],
+  "license": "MIT",
   "dependencies": {
     "cross-fetch": "^3.1.5",
     "express": "^4.17.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/node": "^17.0.32",
+    "babel-loader": "^8.2.5",
     "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.14.38",
     "nodemon": "^2.0.15",
+    "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
