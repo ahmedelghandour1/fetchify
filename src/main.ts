@@ -1,5 +1,10 @@
 /* eslint-disable */
-import { isBrowser, nop, serializeObject } from './helpers';
+import { 
+  isBrowser, 
+  nop, 
+  serializeObject
+ } from './helpers';
+
 
 /* ================= START TYPES ================= */
 declare const global: Record<string, unknown>;
@@ -114,13 +119,14 @@ function setURL(baseURL: string | undefined,
 async function init(type: string,
   path: string,
   {
-    params = {}, configs = {}, body, headers = {}, responseType = 'json',
+    params = {}, configs = {}, body, headers = {}, responseType = 'json', meta = {}
   }: {
     params?: Record<string, unknown | any>;
     configs?: Configs;
     body?: any;
     headers?: HeadersInit;
     responseType?: ResponseType;
+    meta: Record<string, any>;
   }): Promise<FetchResult> {
   let requestInit: RequestInit = {};
   let result: any;
@@ -154,6 +160,7 @@ async function init(type: string,
     // }
     if (!response.ok) {
       result = {
+        meta,
         response,
         error: {
           ...responseBody,
@@ -163,7 +170,7 @@ async function init(type: string,
       throw result;
     }
 
-    result = { data: responseBody, response };
+    result = { data: responseBody, response, meta };
     if (interceptors.response) {
       return interceptors.response(result, requestInit);
     }
@@ -199,16 +206,18 @@ export async function GET<Type = any>(
     params,
     configs,
     headers,
-    responseType
+    responseType,
+    meta = {}
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: HeadersInit,
-    responseType?: ResponseType
+    responseType?: ResponseType,
+    meta?: Record<string, any>
   } = {},
 ): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
-  const { data, response, error } = await init('GET', route, { params, configs, headers, responseType });
+  const { data, response, error } = await init('GET', route, { params, configs, headers, responseType, meta });
 
   return {
     data,
@@ -224,14 +233,16 @@ export async function HEAD<Type = any>(
     params,
     configs,
     headers,
+    meta = {}
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: HeadersInit,
+    meta?: Record<string, any>
   } = {},
 ): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
-  const { data, response, error } = await init('HEAD', route, { params, configs, headers });
+  const { data, response, error } = await init('HEAD', route, { params, configs, headers, meta });
   return {
     data,
     response,
@@ -247,20 +258,22 @@ export async function POST<Type = any>(
     params,
     configs,
     headers = {},
-    responseType
+    responseType,
+    meta = {}
 
   }: {
     body?: any,
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: HeadersInit,
-    responseType?: ResponseType
+    responseType?: ResponseType,
+    meta?: Record<string, any>
   } = {},
 ): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
   const { data, response, error } = await init('POST', route,
     {
-      params, configs, body, headers, responseType
+      params, configs, body, headers, responseType, meta
     });
   return {
     data,
@@ -272,7 +285,7 @@ export async function POST<Type = any>(
 
 export async function PUT<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType
+    body = {}, params, configs, headers = {}, responseType, meta = {}
 
   }: {
     body?: any;
@@ -280,10 +293,11 @@ export async function PUT<Type = any>(route: string,
     configs?: Configs;
     headers?: HeadersInit;
     responseType?: ResponseType;
+    meta?: Record<string, any>
   } = {}): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
   const { data, response, error } = await init('PUT', route, {
-    params, configs, body, headers, responseType
+    params, configs, body, headers, responseType, meta
   });
   return {
     data,
@@ -295,17 +309,18 @@ export async function PUT<Type = any>(route: string,
 
 export async function DELETE<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType
+    body = {}, params, configs, headers = {}, responseType, meta = {}
   }: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
     headers?: HeadersInit;
     responseType?: ResponseType;
+    meta?: Record<string, any>
   } = {}): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
   const { data, response, error } = await init('DELETE', route, {
-    params, configs, body, headers, responseType
+    params, configs, body, headers, responseType, meta
   });
   return {
     data,
@@ -317,7 +332,7 @@ export async function DELETE<Type = any>(route: string,
 
 export async function PATCH<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType
+    body = {}, params, configs, headers = {}, responseType, meta={}
 
   }: {
     body?: any;
@@ -325,10 +340,11 @@ export async function PATCH<Type = any>(route: string,
     configs?: Configs;
     headers?: HeadersInit;
     responseType?: ResponseType;
+    meta?: Record<string, any>
   } = {}): FetchData<Type> {
   const controller = setFetchAbort(configs || {});
   const { data, response, error } = await init('PATCH', route, {
-    params, configs, body, headers, responseType
+    params, configs, body, headers, responseType, meta
   });
   return {
     data,
@@ -338,7 +354,6 @@ export async function PATCH<Type = any>(route: string,
   };
 }
 
-
 const fetchify = {
   POST,
   GET,
@@ -347,4 +362,13 @@ const fetchify = {
   PATCH,
   HEAD,
 };
+
 export default fetchify;
+
+export {
+  isBrowser, 
+  nop, 
+  serializeObject, 
+  getParamsFromString, 
+  replaceParamsInString 
+} from './helpers'

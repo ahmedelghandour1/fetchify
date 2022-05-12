@@ -7,7 +7,12 @@ export {
     PUT, 
     globalConfigs, 
     globalHeaders, 
-    setInterceptors 
+    setInterceptors ,
+    getParamsFromString,
+    isBrowser,
+    nop,
+    replaceParamsInString,
+    serializeObject
 } from '@/main';
 
 export type { 
