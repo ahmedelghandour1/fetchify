@@ -27,7 +27,7 @@ export type FetchResult = {
   response?: undefined;
 };
 export type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
-export type ResponseType = 'json' | 'text' // TODO: need to add the dynamic type
+export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData' // TODO: need to add the dynamic type
 export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
   request?: (request: RequestInit) => void,
@@ -35,7 +35,7 @@ export interface Interceptors {
 }
 /* ================= END TYPES ================= */
 
-const responseTypes: Array<ResponseType> = ['json', 'text'];
+const responseTypes: Array<ResponseType> = ['json', 'text', 'blob', 'arrayBuffer', 'formData'];
 
 export const globalConfigs = (function globalConfigs() {
   let _configs: Configs = {};
