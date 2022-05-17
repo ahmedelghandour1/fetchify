@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
   "sideEffects": false,
   "files": [
+    "./dist",
     "./dist/*"
   ],
   "scripts": {
