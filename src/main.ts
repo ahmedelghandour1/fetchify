@@ -136,7 +136,11 @@ async function init(type: string,
   const { baseURL, ...restGlobalConfig } = globalConfig;
   requestInit.method = type;
   if (body && type && type !== 'GET') {
-    requestInit.body = typeof body === 'string' ? body : JSON.stringify(body);
+    if(body instanceof FormData || typeof body === 'string') {
+      requestInit.body = body;
+    } else {
+    requestInit.body = JSON.stringify(body);
+    }
   }
   headers = { ...globalHeaders.getAll(), ...headers };
   requestInit = {
