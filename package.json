@@ -29,7 +29,8 @@
     "build:wp": "cross-env NODE_ENV=production webpack --config webpack.config.js --mode production --env production",
     "watch:wp": "cross-env NODE_ENV=development webpack --watch --config webpack.config.js --mode development --env development",
     "prepublish": "npm run build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run build"
   },
   "exports": {
     ".": {
