@@ -1,6 +1,6 @@
 {
   "name": "@ahmedelghandour/fetchify",
-  "version": "1.3.0",
+  "version": "3.0.0",
   "private": false,
   "description": "Universal wrapper for Fetch API",
   "main": "./dist/build.common.js",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
   "sideEffects": false,
   "files": [
+    "./dist",
     "./dist/*"
   ],
   "scripts": {
@@ -28,7 +29,8 @@
     "build:wp": "cross-env NODE_ENV=production webpack --config webpack.config.js --mode production --env production",
     "watch:wp": "cross-env NODE_ENV=development webpack --watch --config webpack.config.js --mode development --env development",
     "prepublish": "npm run build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run build"
   },
   "exports": {
     ".": {
