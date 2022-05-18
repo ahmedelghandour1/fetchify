@@ -18,10 +18,6 @@
   },
   "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
   "sideEffects": false,
-  "files": [
-    "./dist",
-    "./dist/*"
-  ],
   "scripts": {
     "server": "nodemon ./server/index.js",
     "build": "cross-env NODE_ENV=production tsc --emitDeclarationOnly  && node ./esbuild.config.js",
