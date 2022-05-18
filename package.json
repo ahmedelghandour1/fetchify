@@ -1,6 +1,6 @@
 {
   "name": "@elghandour/fetchify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "Universal wrapper for Fetch API",
   "main": "./dist/build.common.js",
