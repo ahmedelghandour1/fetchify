@@ -66,23 +66,23 @@ export const globalConfigs = (function globalConfigs() {
 }());
 
 export const globalHeaders = (function globalHeaders() {
-  let _headers: HeadersInit = {};
+  let _headers: Partial<HeadersInit> = {};
 
-  const getAll = function getAll(): HeadersInit {
+  const getAll = function getAll(): Partial<HeadersInit> {
     return _headers;
   };
 
-  const set = function set(headers: HeadersInit): void {
-    _headers = headers as HeadersInit;
+  const set = function set(headers: Partial<HeadersInit>): void {
+    _headers = headers as Partial<HeadersInit>;
   };
 
-  const update = function update(headers: HeadersInit): void {
-    _headers = { ..._headers, ...headers } as HeadersInit;
+  const update = function update(headers: Partial<HeadersInit>): void {
+    _headers = { ..._headers, ...headers } as Partial<HeadersInit>;
   };
 
   const remove = function remove(key: string | (string)[]) {
     if (typeof key === 'string') {
-      delete _headers[key as keyof HeadersInit];
+      delete _headers[key as keyof Partial<HeadersInit>];
     }
     console.log(_headers);
   };
@@ -124,7 +124,7 @@ async function init(type: string,
     params?: Record<string, unknown | any>;
     configs?: Configs;
     body?: any;
-    headers?: HeadersInit;
+    headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta: Record<string, any>;
   }): Promise<FetchResult> {
@@ -142,12 +142,16 @@ async function init(type: string,
     requestInit.body = JSON.stringify(body);
     }
   }
-  headers = { ...globalHeaders.getAll(), ...headers };
+  const _headers = { ...globalHeaders.getAll(), ...headers } as HeadersInit;
+
+    Object.keys(_headers).forEach((k) => {
+    if (_headers[k] === undefined && typeof _headers[k] === 'undefined') delete _headers[k];
+  })
   requestInit = {
     ...requestInit,
     ...restGlobalConfig,
     ...configs,
-    headers,
+    headers: _headers,
   };
 
   if (interceptors.request) {
@@ -215,7 +219,7 @@ export async function GET<Type = any>(
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
-    headers?: HeadersInit,
+    headers?: Partial<HeadersInit>,
     responseType?: ResponseType,
     meta?: Record<string, any>
   } = {},
@@ -241,7 +245,7 @@ export async function HEAD<Type = any>(
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
-    headers?: HeadersInit,
+    headers?: Partial<HeadersInit>,
     meta?: Record<string, any>
   } = {},
 ): FetchData<Type> {
@@ -269,7 +273,7 @@ export async function POST<Type = any>(
     body?: any,
     params?: Record<string, unknown | any>,
     configs?: Configs,
-    headers?: HeadersInit,
+    headers?: Partial<HeadersInit>,
     responseType?: ResponseType,
     meta?: Record<string, any>
   } = {},
@@ -295,7 +299,7 @@ export async function PUT<Type = any>(route: string,
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
-    headers?: HeadersInit;
+    headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta?: Record<string, any>
   } = {}): FetchData<Type> {
@@ -318,7 +322,7 @@ export async function DELETE<Type = any>(route: string,
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
-    headers?: HeadersInit;
+    headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta?: Record<string, any>
   } = {}): FetchData<Type> {
@@ -342,7 +346,7 @@ export async function PATCH<Type = any>(route: string,
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
-    headers?: HeadersInit;
+    headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta?: Record<string, any>
   } = {}): FetchData<Type> {
