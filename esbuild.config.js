@@ -1,11 +1,13 @@
 const mode = process.env.NODE_ENV;
-
+const watch = process.env.WATCH;
+console.log(!!watch);
 const baseConfig = (src) => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         entryPoints: [src],
         loader: { ".ts": 'ts' },
-        minify: mode === 'production'
+        minify: mode === 'production',
+        watch: !!watch
     }
 
     return config;
