@@ -186,12 +186,21 @@ async function init(type: string,
 
     return result;
   } catch (error: any) {
+
     const isTypeError = error instanceof Error && !('response' in error);
-    const errResponse: FetchResult = isTypeError ? { error } : error;
+    const errResponse: FetchResult = isTypeError ?
+      {
+        error: {
+          name: error.name,
+          message: error.message
+        }
+      }
+      : error;
     if (interceptors.response) {
       return interceptors.response(errResponse, requestInit);
 
     }
+    console.log(errResponse, isTypeError);
 
     return errResponse;
   }
@@ -416,7 +425,7 @@ export async function PATCH<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-   abortCallback: (controller: AbortController) => void): FetchData<Type> {
+  abortCallback: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
     configs.signal = controller.signal;

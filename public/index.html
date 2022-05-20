@@ -2,18 +2,37 @@
 
 <body>
 
-    <script src="./../dist/build.umd.js"></script>
+
+<!-- 
+
+============ umd version ===============
+
+ -->
+
+    <!-- <script src="./../dist/build.umd.js"></script>
     <script>
+        console.log(fetchify);
         (async function () {
             const { data, response, error } = await fetchify.GET(
                 'https://jsonplaceholder.typicode.com/todos',
                 { timeout: 100 },
-                undefined,
                 (controller) => {
                     setTimeout(() => {
                         controller.abort()
                     }, 500)
                 });
+            console.log(data, response, error);
+        })()
+    </script> -->
+
+
+
+    <script type="module">
+        import {GET} from './../dist/build.esm.js'
+        (async function () {
+            const { data, response, error } = await GET(
+                'https://jsonplaceholder.typicode.com/todos',
+                { timeout: 10 });
             console.log(data, response, error);
         })()
     </script>

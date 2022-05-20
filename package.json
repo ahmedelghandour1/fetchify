@@ -20,9 +20,9 @@
   "sideEffects": false,
   "scripts": {
     "server": "nodemon ./server/index.js",
-    "build": "cross-env NODE_ENV=production tsc --emitDeclarationOnly  && node ./esbuild.config.js",
+    "build": "cross-env NODE_ENV=production node ./esbuild.config.js && tsc --emitDeclarationOnly",
     "watch:types": "tsc --emitDeclarationOnly --watch",
-    "watch:ts": "cross-env WATCH=1 NODE_ENV=production  node ./esbuild.config.js",
+    "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./esbuild.config.js",
     "watch": "concurrently  \"npm:watch:types\" \"npm:watch:ts\"",
     "build:wp": "cross-env NODE_ENV=production webpack --config webpack.config.js --mode production --env production",
     "watch:wp": "cross-env NODE_ENV=development webpack --watch --config webpack.config.js --mode development --env development",

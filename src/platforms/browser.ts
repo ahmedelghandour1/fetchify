@@ -12,7 +12,8 @@ export {
     isBrowser,
     nop,
     replaceParamsInString,
-    serializeObject
+    serializeObject,
+    default
 } from '@/main';
 
 export type { 
