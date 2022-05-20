@@ -28,7 +28,7 @@ const commonJsBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded:')
+                else console.log('watch build succeeded: build.common.js')
             },
         }
     }
@@ -46,6 +46,14 @@ const umdBuild = () => {
         sourcemap: 'external',
         globalName: 'window.fetchify',
         format: 'iife',
+    }
+    if (mode === 'development') {
+        config.watch = {
+            onRebuild(error, result) {
+                if (error) console.error('watch build failed:', error)
+                else console.log('watch build succeeded: build.umd.js')
+            },
+        }
     }
 
     return config;
@@ -66,7 +74,7 @@ const esmBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded:')
+                else console.log('watch build succeeded: build.esm.js')
             },
         }
     }
