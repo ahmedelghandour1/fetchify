@@ -20,7 +20,7 @@ const commonJsBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'node',
-        outfile: 'dist/build.common.js',
+        outfile: '../dist/build.common.js',
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
@@ -43,7 +43,7 @@ const umdBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: 'dist/build.umd.js',
+        outfile: '../dist/build.umd.js',
         bundle: true,
         sourcemap: 'external',
         globalName: 'window.fetchify',
@@ -65,7 +65,7 @@ const esmBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: 'dist/build.esm.js',
+        outfile: '../dist/build.esm.js',
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,

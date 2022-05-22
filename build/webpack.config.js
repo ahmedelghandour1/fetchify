@@ -9,11 +9,11 @@ function browserBuild() {
             outputModule: true
         },
         entry: {
-            main: './src/platforms/browser.ts'
+            main: '../src/platforms/browser.ts'
         },
         output: {
             filename: "[name].esm.js",
-            path: resolve(__dirname, "dist"),
+            path: resolve(__dirname, "../dist"),
             libraryTarget: 'module',
             globalObject: 'this',
             libraryExport: 'default',
@@ -58,7 +58,7 @@ function nodejsBuild() {
     const config = {
         target: 'node',
         entry: {
-            main: './src/platforms/nodejs.ts'
+            main: '../src/platforms/nodejs.ts'
         },
         output: {
             filename: "[name].common.js",
