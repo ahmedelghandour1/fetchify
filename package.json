@@ -32,6 +32,7 @@
   ],
   "scripts": {
     "server": "nodemon ./server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production node ./esbuild.config.js && tsc --emitDeclarationOnly",
     "watch:types": "tsc --emitDeclarationOnly --watch",
     "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./esbuild.config.js",
