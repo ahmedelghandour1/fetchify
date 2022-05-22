@@ -7,7 +7,10 @@ const baseConfig = (src) => {
         entryPoints: [src],
         loader: { ".ts": 'ts' },
         minify: mode === 'production',
-        watch: !!watch
+        watch: !!watch,
+        banner: {
+            js: require('./package').buildBanner(),
+        }
     }
 
     return config;
@@ -41,7 +44,6 @@ const umdBuild = () => {
     const config = {
         platform: 'browser',
         outfile: 'dist/build.umd.js',
-        // target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
         bundle: true,
         sourcemap: 'external',
         globalName: 'window.fetchify',
