@@ -13,9 +13,10 @@ module.exports = {
 
         return `/** 
  * fetchify v${version} (${url})
- * Copyright ${getYearsRange()} | Author ${author}
- * Licensed under ${license} (https://github.com/ahmedElghandour1/fetchify/blob/Mmaster/LICENSE)
- */`
+ * Copyright ${getYearsRange()} | Author: ${author}
+ * Licensed under ${license} (https://github.com/ahmedElghandour1/fetchify/blob/master/LICENSE)
+ */
+`
 
     }
 }

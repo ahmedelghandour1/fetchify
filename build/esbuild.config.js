@@ -1,5 +1,6 @@
 const mode = process.env.NODE_ENV;
 const watch = process.env.WATCH;
+const { resolve } = require('path');
 console.log(!!watch);
 const baseConfig = (src) => {
     /**  @type {import('esbuild').BuildOptions}  */
@@ -20,7 +21,7 @@ const commonJsBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'node',
-        outfile: '../dist/build.common.js',
+        outfile: resolve(__dirname, '../dist/build.common.js'),
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
@@ -43,7 +44,7 @@ const umdBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: '../dist/build.umd.js',
+        outfile: resolve(__dirname, '../dist/build.umd.js'),
         bundle: true,
         sourcemap: 'external',
         globalName: 'window.fetchify',
@@ -65,7 +66,7 @@ const esmBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: '../dist/build.esm.js',
+        outfile: resolve(__dirname, '../dist/build.esm.js'),
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
@@ -89,24 +90,26 @@ const esmBuild = () => {
 const build = (params) => {
     require('esbuild').build(params)
         .then((result) => console.log(`⚡ ${mode === 'production' ? 'done' : 'watching'}...`, result))
-        .catch(() => process.exit(1));
+        .catch((err) => {
+            console.log(err);
+        });
 
 }
 
 /** build.common.js */
 build({
-    ...baseConfig('src/platforms/nodejs.ts'),
+    ...baseConfig(resolve(__dirname, '../src/platforms/nodejs.ts')),
     ...commonJsBuild()
 })
 
 /** build.umd.js */
 build({
-    ...baseConfig('src/platforms/browser.ts'),
+    ...baseConfig(resolve(__dirname, '../src/platforms/browser.ts')),
     ...umdBuild()
 })
 
 /** build.esm.js */
 build({
-    ...baseConfig('src/platforms/browser.ts'),
+    ...baseConfig(resolve(__dirname, '../src/platforms/browser.ts')),
     ...esmBuild()
 })
