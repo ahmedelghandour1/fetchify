@@ -1,11 +1,16 @@
 const mode = process.env.NODE_ENV;
-
+const watch = process.env.WATCH;
+console.log(!!watch);
 const baseConfig = (src) => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         entryPoints: [src],
         loader: { ".ts": 'ts' },
-        minify: mode === 'production'
+        minify: mode === 'production',
+        watch: !!watch,
+        banner: {
+            js: require('./package').buildBanner(),
+        }
     }
 
     return config;
@@ -15,7 +20,7 @@ const commonJsBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'node',
-        outfile: 'dist/build.common.js',
+        outfile: '../dist/build.common.js',
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
@@ -26,7 +31,7 @@ const commonJsBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded:')
+                else console.log('watch build succeeded: build.common.js')
             },
         }
     }
@@ -38,12 +43,19 @@ const umdBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: 'dist/build.umd.js',
-        // target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
+        outfile: '../dist/build.umd.js',
         bundle: true,
         sourcemap: 'external',
         globalName: 'window.fetchify',
         format: 'iife',
+    }
+    if (mode === 'development') {
+        config.watch = {
+            onRebuild(error, result) {
+                if (error) console.error('watch build failed:', error)
+                else console.log('watch build succeeded: build.umd.js')
+            },
+        }
     }
 
     return config;
@@ -53,7 +65,7 @@ const esmBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: 'dist/build.esm.js',
+        outfile: '../dist/build.esm.js',
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
@@ -64,7 +76,7 @@ const esmBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded:')
+                else console.log('watch build succeeded: build.esm.js')
             },
         }
     }

@@ -1,9 +1,8 @@
 /* eslint-disable */
-import { 
-  isBrowser, 
-  nop, 
+import {
+  nop,
   serializeObject
- } from './helpers';
+} from './helpers';
 
 
 /* ================= START TYPES ================= */
@@ -84,7 +83,6 @@ export const globalHeaders = (function globalHeaders() {
     if (typeof key === 'string') {
       delete _headers[key as keyof Partial<HeadersInit>];
     }
-    console.log(_headers);
   };
 
   return {
@@ -136,17 +134,19 @@ async function init(type: string,
   const { baseURL, ...restGlobalConfig } = globalConfig;
   requestInit.method = type;
   if (body && type && type !== 'GET') {
-    if(body instanceof FormData || typeof body === 'string') {
+    if (body instanceof FormData || typeof body === 'string') {
       requestInit.body = body;
     } else {
-    requestInit.body = JSON.stringify(body);
+      requestInit.body = JSON.stringify(body);
     }
   }
   const _headers = { ...globalHeaders.getAll(), ...headers } as HeadersInit;
 
-    Object.keys(_headers).forEach((k) => {
+  Object.keys(_headers).forEach((k) => {
     if (_headers[k] === undefined && typeof _headers[k] === 'undefined') delete _headers[k];
   })
+
+
   requestInit = {
     ...requestInit,
     ...restGlobalConfig,
@@ -159,12 +159,13 @@ async function init(type: string,
   }
   url = setURL(configs.baseURL || baseURL, path, params);
   try {
+
     response = await fetch(url, requestInit);
     responseType = responseTypes.includes(responseType) ? responseType : 'json';
     let responseBody = {};
     // TODO check if _bodyBlob is valid to use
     // if ((response as any)._bodyBlob.size) {
-      responseBody = await response[responseType]();
+    responseBody = await response[responseType]();
     // }
     if (!response.ok) {
       result = {
@@ -185,53 +186,78 @@ async function init(type: string,
 
     return result;
   } catch (error: any) {
+
     const isTypeError = error instanceof Error && !('response' in error);
-    const errResponse: FetchResult = isTypeError ? { error } : error;
+    const errResponse: FetchResult = isTypeError ?
+      {
+        error: {
+          name: error.name,
+          message: error.message
+        }
+      }
+      : error;
     if (interceptors.response) {
       return interceptors.response(errResponse, requestInit);
 
     }
+    console.log(errResponse, isTypeError);
 
     return errResponse;
   }
 }
 
-function setFetchAbort(options: RequestInit = {}) {
-  if (isBrowser()) {
-    const controller = new AbortController();
-    const { signal } = controller;
-    options.signal = signal;
-    return controller;
-  }
-  return {
-    abort: nop,
-  };
+function setFetchAbort() {
+  const controller = new AbortController();
+  return controller;
 }
+
+
+function HandleTimeOut(timeout: number, controller: AbortController) {
+  if (typeof timeout !== 'number') return;
+
+  const timerId = setTimeout(() => {
+    controller.abort();
+  }, timeout);
+
+  return timerId;
+}
+
 
 export async function GET<Type = any>(
   route: string,
   {
     params,
-    configs,
+    configs = {},
     headers,
     responseType,
-    meta = {}
+    meta = {},
+    timeout
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: Partial<HeadersInit>,
     responseType?: ResponseType,
-    meta?: Record<string, any>
+    meta?: Record<string, any>,
+    timeout?: number;
   } = {},
+  abortCallback: (controller: AbortController) => void
 ): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('GET', route, { params, configs, headers, responseType, meta });
+  clearTimeout(timerId);
 
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 };
 
@@ -241,21 +267,33 @@ export async function HEAD<Type = any>(
     params,
     configs,
     headers,
-    meta = {}
+    meta = {},
+    timeout
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: Partial<HeadersInit>,
-    meta?: Record<string, any>
+    meta?: Record<string, any>;
+    timeout?: number;
   } = {},
+  abortCallback: (controller: AbortController) => void
 ): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('HEAD', route, { params, configs, headers, meta });
+  clearTimeout(timerId);
+
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 };
 
@@ -267,7 +305,8 @@ export async function POST<Type = any>(
     configs,
     headers = {},
     responseType,
-    meta = {}
+    meta = {},
+    timeout
 
   }: {
     body?: any,
@@ -275,25 +314,36 @@ export async function POST<Type = any>(
     configs?: Configs,
     headers?: Partial<HeadersInit>,
     responseType?: ResponseType,
-    meta?: Record<string, any>
+    meta?: Record<string, any>;
+    timeout?: number;
   } = {},
+  abortCallback: (controller: AbortController) => void
 ): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('POST', route,
     {
       params, configs, body, headers, responseType, meta
     });
+  clearTimeout(timerId);
+
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 };
 
 export async function PUT<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta = {}
+    body = {}, params, configs, headers = {}, responseType, meta = {}, timeout
 
   }: {
     body?: any;
@@ -301,46 +351,70 @@ export async function PUT<Type = any>(route: string,
     configs?: Configs;
     headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
-    meta?: Record<string, any>
-  } = {}): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+    meta?: Record<string, any>;
+    timeout?: number;
+  } = {},
+  abortCallback: (controller: AbortController) => void
+): FetchData<Type> {
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('PUT', route, {
     params, configs, body, headers, responseType, meta
   });
+  clearTimeout(timerId);
+
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 }
 
 export async function DELETE<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta = {}
+    body = {}, params, configs, headers = {}, responseType, meta = {},
+    timeout
   }: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
     headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
-    meta?: Record<string, any>
-  } = {}): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+    meta?: Record<string, any>;
+    timeout?: number;
+  } = {},
+  abortCallback: (controller: AbortController) => void): FetchData<Type> {
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('DELETE', route, {
     params, configs, body, headers, responseType, meta
   });
+  clearTimeout(timerId);
+
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 }
 
 export async function PATCH<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta={}
+    body = {}, params, configs, headers = {}, responseType, meta = {}, timeout
 
   }: {
     body?: any;
@@ -348,17 +422,28 @@ export async function PATCH<Type = any>(route: string,
     configs?: Configs;
     headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
-    meta?: Record<string, any>
-  } = {}): FetchData<Type> {
-  const controller = setFetchAbort(configs || {});
+    meta?: Record<string, any>;
+    timeout?: number;
+  } = {},
+  abortCallback: (controller: AbortController) => void): FetchData<Type> {
+  const controller = setFetchAbort();
+  if (controller instanceof AbortController) {
+    configs.signal = controller.signal;
+  }
+
+  if (abortCallback) {
+    abortCallback(controller);
+  }
+  const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('PATCH', route, {
     params, configs, body, headers, responseType, meta
   });
+  clearTimeout(timerId);
+
   return {
     data,
     response,
-    error,
-    abort: () => controller.abort(),
+    error
   };
 }
 
@@ -374,9 +459,9 @@ const fetchify = {
 export default fetchify;
 
 export {
-  isBrowser, 
-  nop, 
-  serializeObject, 
-  getParamsFromString, 
-  replaceParamsInString 
+  isBrowser,
+  nop,
+  serializeObject,
+  getParamsFromString,
+  replaceParamsInString
 } from './helpers'

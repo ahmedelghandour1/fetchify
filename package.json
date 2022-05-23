@@ -1,6 +1,6 @@
 {
   "name": "@elghandour/fetchify",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "description": "Universal wrapper for Fetch API",
   "main": "./dist/build.common.js",
@@ -14,16 +14,31 @@
   },
   "bugs": {
     "url": "https://github.com/ahmedElghandour1/fetchify/issues",
-    "email": "georgian.stan8@gmail.com"
+    "email": "elghandour.12@gmail.com"
   },
   "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
-  "sideEffects": false,
+  "author": "Ahmed Elghandour",
+  "license": "MIT",
+  "keywords": [
+    "fetch",
+    "fetchify",
+    "browser",
+    "node",
+    "nodejs",
+    "fetch wrapper",
+    "uiversal fetch",
+    "http",
+    "promise"
+  ],
   "scripts": {
     "server": "nodemon ./server/index.js",
-    "build": "cross-env NODE_ENV=production tsc --emitDeclarationOnly  && node ./esbuild.config.js",
-    "watch": "cross-env NODE_ENV=development tsc --watch && node ./esbuild.config.js",
-    "build:wp": "cross-env NODE_ENV=production webpack --config webpack.config.js --mode production --env production",
-    "watch:wp": "cross-env NODE_ENV=development webpack --watch --config webpack.config.js --mode development --env development",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env NODE_ENV=production node ./build/esbuild.config.js && tsc --emitDeclarationOnly",
+    "watch:types": "tsc --emitDeclarationOnly --watch",
+    "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./build/esbuild.config.js",
+    "watch": "concurrently  \"npm:watch:types\" \"npm:watch:ts\"",
+    "build:wp": "cross-env NODE_ENV=production webpack --config ./build/webpack.config.js --mode production --env production",
+    "watch:wp": "cross-env NODE_ENV=development webpack --watch --config ./build/webpack.config.js --mode development --env development",
     "prepublish": "npm run build",
     "prepublishOnly": "npm run build",
     "preversion": "npm run build"
@@ -34,20 +49,11 @@
       "require": "./dist/build.common.js"
     }
   },
-  "author": "Ahmed Elghandour",
-  "keywords": [
-    "fetch",
-    "fetchify",
-    "browser",
-    "node",
-    "nodejs",
-    "fetch wrapper",
-    "uiversal fetch"
-  ],
-  "license": "MIT",
+  "sideEffects": false,
   "dependencies": {
-    "cross-fetch": "^3.1.5",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "node-abort-controller": "^3.0.1",
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.17.10",
@@ -55,7 +61,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@types/node": "^17.0.32",
     "babel-loader": "^8.2.5",
-    "concurrently": "^7.1.0",
+    "concurrently": "^7.2.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.14.38",
     "nodemon": "^2.0.15",
@@ -64,5 +70,7 @@
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
-  }
+  },
+  "jsdelivr": "dist/build.umd.js",
+  "unpkg": "dist/build.umd.js"
 }
