@@ -302,7 +302,7 @@ export async function POST<Type = any>(
   {
     body = {},
     params,
-    configs,
+    configs = {},
     headers = {},
     responseType,
     meta = {},
@@ -343,7 +343,7 @@ export async function POST<Type = any>(
 
 export async function PUT<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta = {}, timeout
+    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout
 
   }: {
     body?: any;
@@ -379,7 +379,7 @@ export async function PUT<Type = any>(route: string,
 
 export async function DELETE<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta = {},
+    body = {}, params, configs = {}, headers = {}, responseType, meta = {},
     timeout
   }: {
     body?: any;
@@ -414,7 +414,7 @@ export async function DELETE<Type = any>(route: string,
 
 export async function PATCH<Type = any>(route: string,
   {
-    body = {}, params, configs, headers = {}, responseType, meta = {}, timeout
+    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout
 
   }: {
     body?: any;
