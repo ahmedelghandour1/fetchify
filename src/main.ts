@@ -240,7 +240,7 @@ export async function GET<Type = any>(
     meta?: Record<string, any>,
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void
+  abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
@@ -276,7 +276,7 @@ export async function HEAD<Type = any>(
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void
+  abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
@@ -317,7 +317,7 @@ export async function POST<Type = any>(
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void
+  abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
@@ -354,7 +354,7 @@ export async function PUT<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void
+  abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
@@ -390,7 +390,7 @@ export async function DELETE<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void): FetchData<Type> {
+  abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
     configs.signal = controller.signal;
@@ -425,7 +425,7 @@ export async function PATCH<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
   } = {},
-  abortCallback: (controller: AbortController) => void): FetchData<Type> {
+  abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
     configs.signal = controller.signal;
