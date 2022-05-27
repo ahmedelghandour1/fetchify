@@ -3,11 +3,10 @@
   "version": "1.0.5",
   "private": false,
   "description": "Universal wrapper for Fetch API",
-  "main": "./dist/build.common.js",
-  "module": "./dist/build.esm.js",
-  "type": "commonjs",
   "types": "./dist/types/main.d.ts",
   "typings": "./dist/types/main.d.ts",
+  "jsdelivr": "dist/build.umd.js",
+  "unpkg": "dist/build.umd.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ahmedElghandour1/fetchify.git"
@@ -45,11 +44,19 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/build.esm.js",
-      "require": "./dist/build.common.js"
-    }
+      "import": {
+        "node": "./dist/node/build.esm.js",
+        "default": "./dist/browser/build.esm.js"
+      },
+      "require": {
+        "node": "./dist/node/build.common.js",
+        "default": "./dist/browser/build.common.js"
+      },
+      "types": "./dist/types/main.d.ts"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
   },
-  "sideEffects": false,
   "dependencies": {
     "express": "^4.17.3",
     "node-abort-controller": "^3.0.1",
@@ -70,7 +77,5 @@
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1"
-  },
-  "jsdelivr": "dist/build.umd.js",
-  "unpkg": "dist/build.umd.js"
+  }
 }
