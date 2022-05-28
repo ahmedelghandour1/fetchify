@@ -1,6 +1,7 @@
+import {GET} from '@elghandour/fetchify';
+
 (async function () {
     /** @type {import('../../../dist/types/main')} */
-    const { GET, } = window.fetchify;
     const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
     console.log(data, error, response);
     if (response.status === 200 && data) {

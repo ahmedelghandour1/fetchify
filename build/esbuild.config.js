@@ -177,12 +177,6 @@ build({
     ...nodeCommonJsBuild()
 })
 
-/** build.umd.js */
-build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/nodejs.ts')),
-    ...UMDBuild()
-})
-
 /** build.esm.js */
 build({
     ...baseConfig(resolve(__dirname, '../src/platforms/nodejs.ts')),

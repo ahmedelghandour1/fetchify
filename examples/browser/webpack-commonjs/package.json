@@ -1,5 +1,5 @@
 {
-  "name": "fetchify-example-wp",
+  "name": "fetchify-example-wp-cmjs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +8,5 @@
     "build": "webpack --config ./webpack.config.js --mode production --env production"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@elghandour/fetchify": "file:../../.."
-  }
+  "license": "ISC"
 }

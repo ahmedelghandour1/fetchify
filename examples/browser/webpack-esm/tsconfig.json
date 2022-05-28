@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "sourceMap": true,
+    "importHelpers": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/types.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,10 +1,8 @@
+import { GET } from './../../../dist/browser/build.esm.js';
+
 (async function () {
-    /** @type {import('../../../dist/types/main')} */
-    const { GET, } = window.fetchify;
     const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
-    console.log(data, error, response);
     if (response.status === 200 && data) {
-        console.log(data);
         const appElement = document.querySelector('#app');
         const setPost = (post) => (
             /* html */`
