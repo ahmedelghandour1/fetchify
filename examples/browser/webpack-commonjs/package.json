@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "install": "npm install ../../../",
     "watch": "webpack --config ./webpack.config.js --watch --mode development --env development",
     "build": "webpack --config ./webpack.config.js --mode production --env production"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@elghandour/fetchify": "file:../../.."
+  }
 }

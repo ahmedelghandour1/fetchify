@@ -30,6 +30,7 @@
     "promise"
   ],
   "scripts": {
+    "i": "nodemon ./build/install.mjs",
     "server": "nodemon ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production node ./build/esbuild.config.js && tsc --emitDeclarationOnly",
@@ -42,6 +43,10 @@
     "prepublishOnly": "npm run build",
     "preversion": "npm run build"
   },
+  "files": [
+    "dist/**/*.js",
+    "dist/types/main.d.ts"
+  ],
   "exports": {
     ".": {
       "import": {
@@ -73,6 +78,7 @@
     "esbuild": "^0.14.38",
     "nodemon": "^2.0.15",
     "ts-loader": "^9.3.0",
+    "ts-node": "^10.8.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
