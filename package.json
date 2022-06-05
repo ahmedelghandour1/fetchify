@@ -30,12 +30,12 @@
     "promise"
   ],
   "scripts": {
-    "i": "nodemon ./build/install.mjs",
+    "install": "node ./build/install.mjs",
     "server": "nodemon ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=production node ./build/esbuild.config.js && tsc --emitDeclarationOnly",
+    "build": "cross-env NODE_ENV=production node ./build/esbuild.config.mjs && tsc --emitDeclarationOnly",
     "watch:types": "tsc --emitDeclarationOnly --watch",
-    "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./build/esbuild.config.js",
+    "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./build/esbuild.config.mjs",
     "watch": "concurrently  \"npm:watch:types\" \"npm:watch:ts\"",
     "build:wp": "cross-env NODE_ENV=production webpack --config ./build/webpack.config.js --mode production --env production",
     "watch:wp": "cross-env NODE_ENV=development webpack --watch --config ./build/webpack.config.js --mode development --env development",

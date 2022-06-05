@@ -1,10 +1,15 @@
-import f, { GET } from './../../../dist/browser/build.esm.js';
+const express = require('express');
+const helpers = require('./helpers');
+const { GET } = require('@elghandour/fetchify')
+const app = express();
 
-console.log(GET, f);
-(async function () {
+const PORT = 8080;
+
+app.use("*", async (req, res) => {
     const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
+    console.log(data, error, response);
     if (response.status === 200 && data) {
-        const appElement = document.querySelector('#app');
+        console.log(data);
         const setPost = (post) => (
             /* html */`
             <div class="post">
@@ -18,7 +23,13 @@ console.log(GET, f);
             return setPost(post);
         });
 
-        appElement.innerHTML = posts.join('\n');
+        res.send(helpers.pageStyle().
+            concat(`<div id="app">${posts.join('\n')}</div>`))
     }
+})
 
-})();
+
+
+app.listen(PORT, () => {
+    console.log('You can navigate to', 'http://localhost:' + PORT);
+});

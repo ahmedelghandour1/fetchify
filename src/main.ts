@@ -4,6 +4,7 @@ import {
   serializeObject
 } from './helpers';
 
+declare const FileOutput: string;
 
 /* ================= START TYPES ================= */
 declare const global: Record<string, unknown>;
@@ -465,3 +466,12 @@ export {
   getParamsFromString,
   replaceParamsInString
 } from './helpers'
+
+
+
+/**
+ * ========  FOR DEBUGGING  ==========
+ */
+
+// const x = FileOutput
+// FileOutput && console.log(FileOutput)

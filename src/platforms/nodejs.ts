@@ -6,4 +6,22 @@ if(!(globalThis?.fetch && global?.fetch)) {
   global._AbortController = _AbortController;
   globalThis._AbortController = _AbortController;
 }
-  module.exports = require('@/main');
+
+ export { 
+    DELETE, 
+    GET, 
+    HEAD, 
+    PATCH, 
+    POST, 
+    PUT, 
+    globalConfigs, 
+    globalHeaders, 
+    setInterceptors ,
+    getParamsFromString,
+    isBrowser,
+    nop,
+    replaceParamsInString,
+    serializeObject,
+    default
+} from '@/main';
+

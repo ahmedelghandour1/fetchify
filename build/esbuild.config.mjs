@@ -1,7 +1,13 @@
+import { rmSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { buildBanner } from './banner.mjs';
+import { build as esBuild } from 'esbuild'
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const mode = process.env.NODE_ENV;
 const watch = process.env.WATCH;
-const { resolve } = require('path');
-console.log(!!watch);
+
 const baseConfig = (src) => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
@@ -10,7 +16,7 @@ const baseConfig = (src) => {
         minify: mode === 'production',
         watch: !!watch,
         banner: {
-            js: require('./banner').buildBanner(),
+            js: buildBanner(),
         }
     }
 
@@ -26,7 +32,10 @@ const nodeCommonJsBuild = () => {
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
-        format: 'cjs'
+        format: 'cjs',
+        define: {
+            FileOutput: mode !== 'production' && "'dist/node/build.common.js'"
+        }
     }
 
     if (mode === 'development') {
@@ -48,7 +57,10 @@ const nodeESMBuild = () => {
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
-        format: 'esm'
+        format: 'esm',
+        define: {
+            FileOutput: mode !== 'production' && "'dist/node/build.esm.js'"
+        }
     }
 
     if (mode === 'development') {
@@ -73,6 +85,9 @@ const UMDBuild = () => {
         sourcemap: 'inline',
         globalName: 'window.fetchify',
         format: 'iife',
+        define: {
+            FileOutput: mode !== 'production' && "'dist/browser/build.umd.js'"
+        }
     }
     if (mode === 'development') {
         config.watch = {
@@ -95,7 +110,10 @@ const browserESMBuild = () => {
         bundle: true,
         sourcemap: 'inline',
         treeShaking: true,
-        format: 'esm'
+        format: 'esm',
+        define: {
+            FileOutput: mode !== 'production' && "'dist/browser/build.esm.js'"
+        }
     }
 
     if (mode === 'development') {
@@ -118,7 +136,10 @@ const browserCommonJsBuild = () => {
         bundle: true,
         treeShaking: true,
         sourcemap: 'inline',
-        format: 'cjs'
+        format: 'cjs',
+        define: {
+            FileOutput: mode !== 'production' && "'dist/browser/build.common.js'"
+        }
     }
 
     if (mode === 'development') {
@@ -136,7 +157,7 @@ const browserCommonJsBuild = () => {
 /**  
  * @param {import('esbuild').BuildOptions} params  */
 const build = (params) => {
-    require('esbuild').build(params)
+    esBuild(params)
         .then((result) => console.log(`⚡ ${mode === 'production' ? 'done' : 'watching'}...`, result))
         .catch((err) => {
             console.log(err);
@@ -145,10 +166,10 @@ const build = (params) => {
 }
 
 
+rmSync(resolve(__dirname, '../dist'), { force: true, recursive: true });
+
+
 //=========== BROWSER ============
-
-
-require('fs').rmSync(resolve(__dirname, '../dist'), { force: true, recursive: true });
 
 /** build.common.js */
 build({

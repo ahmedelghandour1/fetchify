@@ -1,7 +1,10 @@
 /** Experimental */
 const { resolve } = require("path");
 
-function browserBuild() {
+
+const entryPath = resolve(__dirname, "../")
+
+function browserESMBuild() {
     /** @type {import('webpack').Configuration} */
     const config = {
         target: 'web',
@@ -9,18 +12,18 @@ function browserBuild() {
             outputModule: true
         },
         entry: {
-            main: '../src/platforms/browser.ts'
+            main: resolve(entryPath, 'src/platforms/browser.ts')
         },
         output: {
-            filename: "[name].esm.js",
-            path: resolve(__dirname, "../dist"),
+            filename: "build.esm.js",
+            path: resolve(entryPath, "dist/browser"),
             libraryTarget: 'module',
             globalObject: 'this',
             libraryExport: 'default',
         },
         resolve: {
             alias: {
-                '@': resolve(__dirname, 'src')
+                '@': resolve(entryPath, 'src')
             },
             extensions: ['.tsx', '.ts', '.js'],
             mainFields: ["exports", "module", "main"],
@@ -31,15 +34,81 @@ function browserBuild() {
                     test: /\.tsx?$/,
                     exclude: /[\\/]node_modules[\\/]/,
                     use: [
-                        // {
-                        //     loader: "babel-loader",
-                        //     options: {
-                        //         presets: [
-                        //             "@babel/preset-env",
-                        //             "@babel/preset-typescript",
-                        //         ],
-                        //     },
-                        // },
+                        {
+                            loader: 'ts-loader'
+                        }
+                    ],
+                },
+            ]
+        }
+    }
+    return config;
+}
+
+function browserCommonJsBuild() {
+    /** @type {import('webpack').Configuration} */
+    const config = {
+        target: 'web',
+        entry: {
+            main: resolve(entryPath, 'src/platforms/browser.ts')
+        },
+        output: {
+            filename: "build.common.js",
+            path: resolve(entryPath, "dist/browser"),
+            libraryTarget: 'commonjs',
+            globalObject: 'this',
+            libraryExport: 'default',
+        },
+        resolve: {
+            alias: {
+                '@': resolve(entryPath, 'src')
+            },
+            extensions: ['.tsx', '.ts', '.js'],
+            mainFields: ["exports", "module", "main"],
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    exclude: /[\\/]node_modules[\\/]/,
+                    use: [
+                        {
+                            loader: 'ts-loader'
+                        }
+                    ],
+                },
+            ]
+        }
+    }
+    return config;
+}
+
+function nodejsCommonBuild() {
+    /** @type {import('webpack').Configuration} */
+    const config = {
+        target: 'node',
+        entry: {
+            main: resolve(entryPath, 'src/platforms/nodejs.ts')
+        },
+        output: {
+            filename: "build.common.js",
+            path: resolve(entryPath, "dist/node"),
+            libraryTarget: 'umd',
+            libraryExport: 'default',
+        },
+        resolve: {
+            alias: {
+                '@': resolve(entryPath, 'src')
+            },
+            extensions: ['.tsx', '.ts', '.js'],
+            mainFields: ["exports", "module", "main"],
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts?$/,
+                    exclude: /[\\/]node_modules[\\/]/,
+                    use: [
                         {
                             loader: 'ts-loader'
                         }
@@ -49,20 +118,22 @@ function browserBuild() {
         }
     }
 
-
     return config;
 }
 
-function nodejsBuild() {
+function nodejsESMBuild() {
     /** @type {import('webpack').Configuration} */
     const config = {
         target: 'node',
+        experiments: {
+            outputModule: true
+        },
         entry: {
-            main: '../src/platforms/nodejs.ts'
+            main: resolve(entryPath, 'src/platforms/nodejs.ts')
         },
         output: {
-            filename: "[name].common.js",
-            path: resolve(__dirname, "dist"),
+            filename: "build.common.js",
+            path: resolve(__dirname, "dist/node"),
             libraryTarget: 'umd',
             libraryExport: 'default',
         },
@@ -91,6 +162,7 @@ function nodejsBuild() {
     return config;
 }
 
+
 module.exports = (env, argv) => {
     const generalConfig = {};
     if (argv.mode === 'development') {
@@ -99,14 +171,20 @@ module.exports = (env, argv) => {
     } else {
         throw new Error('Specify env');
     }
-    const nodeConfig = nodejsBuild();
-    const browserConfig = browserBuild();
-    Object.assign(nodeConfig, generalConfig);
-    Object.assign(browserConfig, generalConfig);
+    const nodeCMConfig = nodejsCommonBuild();;
+    const nodeESMConfig = nodejsESMBuild();;
+    const browserCMConfig = browserCommonJsBuild();
+    const browserESMConfig = browserESMBuild();
+    Object.assign(nodeCMConfig, generalConfig);
+    Object.assign(nodeESMConfig, generalConfig);
+    Object.assign(browserCMConfig, generalConfig);
+    Object.assign(browserESMConfig, generalConfig);
 
     return [
-        nodeConfig,
-        browserConfig
+        nodeCMConfig,
+        // nodeESMConfig,
+        browserCMConfig,
+        browserESMConfig,
     ]
 };
 

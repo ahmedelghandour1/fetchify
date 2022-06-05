@@ -1,35 +1,43 @@
-import { readdirSync, existsSync } from 'fs';
+import { readdirSync, existsSync, statSync } from 'fs';
 import { resolve, dirname, join } from 'path';
-// import cp from 'child_process';
-// import os from 'os';
+import cp from 'child_process';
+import os from 'os';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = dirname(__filename);
 
+function install(startDir) {
+    const packageExist = existsSync(join(startDir, 'package.json'));
+    if (packageExist) {
 
-// 1- search inside a directory for package.json. when it have package.json then install.
-// 2- when not and have folders then 
-// 3- do 1 again
+        const npmCmd = os.platform().startsWith('win') ? 'npm.cmd' : 'npm';
 
+        const ls = cp.spawn(npmCmd, ['i'], {
+            env: process.env,
+            cwd: startDir,
+            stdio: 'inherit'
+        });
 
-const entryPoint = resolve(__dirname, '../examples');
+        ls.on('close', (code, signal) => {
+            console.log(startDir);
+        })
 
-const packageExist = existsSync(join(entryPoint, 'package.json'));
+        return;
+    } else {
+        const entries = readdirSync(startDir);
+        for (const entry of entries) {
+            if (statSync(join(startDir, entry)).isDirectory()) {
+                install(join(startDir, entry))
+            }
+        }
 
-console.log(packageExist);
-
-if (packageExist) {
-    // install
-
-    //return;
-} else {
-    const entries = readdirSync(entryPoint);
-    console.log(entries);
-    for (entry)
+    }
 }
 
+
+install(resolve(__dirname, './../examples'))
 
 
 
