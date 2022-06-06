@@ -45,13 +45,14 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/types/main.d.ts"
+    "dist/types/main.d.ts",
+    "app/*.js"
   ],
   "exports": {
     ".": {
       "import": {
-        "node": "./dist/node/build.esm.js",
-        "default": "./dist/browser/build.esm.js"
+        "node": "./app/build.node.js",
+        "default": "./app/build.browser.js"
       },
       "require": {
         "node": "./dist/node/build.common.js",

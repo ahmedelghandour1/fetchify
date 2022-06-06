@@ -37,47 +37,5 @@ function install(startDir) {
 }
 
 
-install(resolve(__dirname, './../examples'))
+install(resolve(__dirname, './../playground'))
 
-
-
-
-
-
-
-
-
-// get library path
-// var libs = resolve(__dirname, '../');
-
-// const inner = readdirSync(libs, { withFileTypes: true })
-//     .map(mode => ([mode.name, mode.isDirectory()]));
-
-// console.log(inner);
-// forEach(function (mod) {
-//     const isDir = mod.isDirectory();
-
-//     console.log(mod.name, isDir);
-//     var modPath = join(lib, mod);
-//     console.log('start', modPath);
-//     // ensure path has package.json
-//     if (!fs.existsSync(join(modPath, 'package.json'))) {
-//         return;
-//     }
-//     console.log('after start');
-
-
-//     // npm binary based on OS
-//     var npmCmd = os.platform().startsWith('win') ? 'npm.cmd' : 'npm';
-
-//     // install folder
-//     const ls = cp.spawn(npmCmd, ['i'], {
-//         env: process.env,
-//         cwd: modPath,
-//         stdio: 'inherit'
-//     });
-
-//     ls.on('close', (code, signal) => {
-//         console.log(code, signal);
-//     })
-// })

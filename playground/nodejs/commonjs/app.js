@@ -1,12 +1,13 @@
-import {GET} from '@elghandour/fetchify';
+const express = require('express');
+const helpers = require('./helpers');
+const { GET } = require('@elghandour/fetchify');
+const app = express();
 
-(async function () {
-    /** @type {import('../../../dist/types/main')} */
+const PORT = 8080;
+
+app.use("*", async (req, res) => {
     const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
-    console.log(data, error, response);
     if (response.status === 200 && data) {
-        console.log(data);
-        const appElement = document.querySelector('#app');
         const setPost = (post) => (
             /* html */`
             <div class="post">
@@ -20,7 +21,13 @@ import {GET} from '@elghandour/fetchify';
             return setPost(post);
         });
 
-        appElement.innerHTML = posts.join('\n');
+        res.send(helpers.pageStyle().
+            concat(`<div id="app">${posts.join('\n')}</div>`))
     }
+})
 
-})();
+
+
+app.listen(PORT, () => {
+    console.log('You can navigate to', 'http://localhost:' + PORT);
+});
