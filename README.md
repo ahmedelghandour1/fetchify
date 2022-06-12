@@ -9,23 +9,25 @@ Using your package manager of choice, add Fetchify to your project's dependencie
   
 Using npm:
  
-> npm install @elghandour/fetchify
-  
+```bash 
+$ npm install @elghandour/fetchify
+```  
 Using Yarn:
-> yarn add @elghandour/fetchify
-
+```bash
+$ yarn add @elghandour/fetchify
+```
 ### Importing
 To use Fetchify in your project, simply import the required functions (and types):  
-```
+```ts
 import { DELETE, GET, PATCH, POST, FetchData } from '@/utils/fetchify';
 ```
 To import helpers:
-```
+```ts
 import { replaceParamsInString } from '@/utils/fetchify/helpers';
 ```
 ### Usage
 Using Fetchify is easily explained with a simple example:
-```
+```ts
 async getCake(name: string): FetchData<Cake> {
     return GET(replaceParamsInString(BAKERY_ENDPOINT_PATH, { param: name }),
   );
@@ -34,7 +36,7 @@ async getCake(name: string): FetchData<Cake> {
 const response = getCake("Sachertorte");
 ```
 `getCake()` will return an object:
-```
+```ts
 {
     response: {},
     data: {},
