@@ -30,7 +30,7 @@
     "promise"
   ],
   "scripts": {
-    "install": "node ./build/install.mjs",
+    "install:X": "node ./build/install.mjs",
     "server": "nodemon ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production node ./build/esbuild.config.mjs && tsc --emitDeclarationOnly",

@@ -53,13 +53,13 @@ const nodeESMBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'node',
-        outfile: resolve(__dirname, '../dist/node/build.esm.js'),
+        outfile: resolve(__dirname, '../dist/node/build.esm.mjs'),
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
         format: 'esm',
         define: {
-            FileOutput: mode !== 'production' && "'dist/node/build.esm.js'"
+            FileOutput: mode !== 'production' && "'dist/node/build.esm.mjs'"
         }
     }
 
@@ -67,7 +67,7 @@ const nodeESMBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.esm.js')
+                else console.log('watch build succeeded: build.esm.mjs')
             },
         }
     }
@@ -105,14 +105,14 @@ const browserESMBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: resolve(__dirname, '../dist/browser/build.esm.js'),
+        outfile: resolve(__dirname, '../dist/browser/build.esm.mjs'),
         loader: { ".ts": 'ts' },
         bundle: true,
         sourcemap: 'inline',
         treeShaking: true,
         format: 'esm',
         define: {
-            FileOutput: mode !== 'production' && "'dist/browser/build.esm.js'"
+            FileOutput: mode !== 'production' && "'dist/browser/build.esm.mjs'"
         }
     }
 
@@ -120,7 +120,7 @@ const browserESMBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.esm.js')
+                else console.log('watch build succeeded: build.esm.mjs')
             },
         }
     }
