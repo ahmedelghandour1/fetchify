@@ -1,6 +1,6 @@
 {
   "name": "@elghandour/fetchify",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": false,
   "description": "Universal wrapper for Fetch API",
   "types": "./dist/types/main.d.ts",
