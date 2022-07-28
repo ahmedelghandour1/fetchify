@@ -1,7 +1,7 @@
 import { rmSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { buildBanner } from './banner.mjs';
+import { buildBanner } from './banner.js';
 import { build as esBuild } from 'esbuild'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,15 +56,16 @@ const nodeESMBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'node',
-        outfile: resolve(__dirname, '../dist/node/build.esm.mjs'),
+        outfile: resolve(__dirname, '../dist/node/build.esm.js'),
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
         sourcemap: false,
         format: 'esm',
+        external: [resolve(__dirname, '../node_modules/*')],
         inject: [resolve(__dirname, '../src/fetch-polyfill-esm.ts')],
         define: {
-            FileOutput: mode !== 'production' && "'dist/node/build.esm.mjs'"
+            FileOutput: mode !== 'production' && "'dist/node/build.esm.js'"
         }
     }
 
@@ -72,7 +73,7 @@ const nodeESMBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.esm.mjs')
+                else console.log('watch build succeeded: build.esm.js')
             },
         }
     }
@@ -110,14 +111,14 @@ const browserESMBuild = () => {
     /**  @type {import('esbuild').BuildOptions}  */
     const config = {
         platform: 'browser',
-        outfile: resolve(__dirname, '../dist/browser/build.esm.mjs'),
+        outfile: resolve(__dirname, '../dist/browser/build.esm.js'),
         loader: { ".ts": 'ts' },
         bundle: true,
         sourcemap: 'inline',
         treeShaking: true,
         format: 'esm',
         define: {
-            FileOutput: mode !== 'production' && "'dist/browser/build.esm.mjs'"
+            FileOutput: mode !== 'production' && "'dist/browser/build.esm.js'"
         }
     }
 
@@ -125,7 +126,7 @@ const browserESMBuild = () => {
         config.watch = {
             onRebuild(error, result) {
                 if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.esm.mjs')
+                else console.log('watch build succeeded: build.esm.js')
             },
         }
     }
