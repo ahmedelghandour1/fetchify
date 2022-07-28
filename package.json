@@ -48,6 +48,7 @@
   },
   "files": [
     "dist/**/*.js",
+    "dist/**/*.mjs",
     "dist/types/main.d.ts"
   ],
   "exports": {
