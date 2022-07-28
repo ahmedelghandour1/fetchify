@@ -6,9 +6,12 @@ const app = express();
 const PORT = 8081;
 
 app.use("*", async (req, res) => {
-    const { data, error, response } = await fetchify.GET('https://jsonplaceholder.typicode.com/posts');
+    const { data, error, response } = await fetchify.GET('https://jsonplaceholder.typicode.com/posts', {}, (controller) => {
+        // controller.abort();
+        // console.log("aborted");
+    });
     console.log(data, error, response);
-    if (response.status === 200 && data) {
+    if (response?.status === 200 && data) {
         console.log(data);
         const setPost = (post) => (
             /* html */`

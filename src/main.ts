@@ -1,6 +1,5 @@
 /* eslint-disable */
 import {
-  nop,
   serializeObject
 } from './helpers';
 
@@ -165,9 +164,7 @@ async function init(type: string,
     responseType = responseTypes.includes(responseType) ? responseType : 'json';
     let responseBody = {};
     // TODO check if _bodyBlob is valid to use
-    // if ((response as any)._bodyBlob.size) {
     responseBody = await response[responseType]();
-    // }
     if (!response.ok) {
       result = {
         meta,
@@ -201,7 +198,6 @@ async function init(type: string,
       return interceptors.response(errResponse, requestInit);
 
     }
-    console.log(errResponse, isTypeError);
 
     return errResponse;
   }

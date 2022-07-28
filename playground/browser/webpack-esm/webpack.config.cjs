@@ -9,6 +9,9 @@ module.exports = (env, argv) => {
     /** @type {import('webpack').Configuration} */
     const config = {
         target: 'web',
+        experiments: {
+            outputModule: true
+        },
         entry: {
             script: resolve(__dirname, 'src/main.ts')
         },

@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const mode = process.env.NODE_ENV;
 const watch = process.env.WATCH;
+console.log(mode);
 
 const baseConfig = (src) => {
     /**  @type {import('esbuild').BuildOptions}  */
@@ -31,8 +32,10 @@ const nodeCommonJsBuild = () => {
         outfile: resolve(__dirname, '../dist/node/build.common.js'),
         loader: { ".ts": 'ts' },
         bundle: true,
-        treeShaking: true,
+        treeShaking: false,
+        sourcemap: false,
         format: 'cjs',
+        inject: [resolve(__dirname, '../src/fetch-polyfill-cj.ts')],
         define: {
             FileOutput: mode !== 'production' && "'dist/node/build.common.js'"
         }
@@ -57,7 +60,9 @@ const nodeESMBuild = () => {
         loader: { ".ts": 'ts' },
         bundle: true,
         treeShaking: true,
+        sourcemap: false,
         format: 'esm',
+        inject: [resolve(__dirname, '../src/fetch-polyfill-esm.ts')],
         define: {
             FileOutput: mode !== 'production' && "'dist/node/build.esm.mjs'"
         }

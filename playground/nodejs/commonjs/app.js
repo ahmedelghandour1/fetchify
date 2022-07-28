@@ -6,8 +6,11 @@ const app = express();
 const PORT = 8080;
 
 app.use("*", async (req, res) => {
-    const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
-    if (response.status === 200 && data) {
+    const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts', {}, (controller) => {
+        controller.abort();
+        console.log("aborted");
+    });
+    if (response?.status === 200 && data) {
         const setPost = (post) => (
             /* html */`
             <div class="post">

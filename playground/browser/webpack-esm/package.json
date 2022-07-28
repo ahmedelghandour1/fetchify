@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "watch": "webpack --config ./webpack.config.js --watch --mode development --env development",
-    "build": "webpack --config ./webpack.config.js --mode production --env production"
+    "watch": "webpack --config ./webpack.config.cjs --watch --mode development --env development",
+    "build": "webpack --config ./webpack.config.cjs --mode production --env production"
   },
   "author": "",
   "license": "ISC",

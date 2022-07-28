@@ -7,6 +7,9 @@
   "typings": "./dist/types/main.d.ts",
   "jsdelivr": "dist/build.umd.js",
   "unpkg": "dist/build.umd.js",
+  "engines": {
+    "node": ">=14.16"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ahmedElghandour1/fetchify.git"
@@ -45,14 +48,13 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/types/main.d.ts",
-    "app/*.js"
+    "dist/types/main.d.ts"
   ],
   "exports": {
     ".": {
       "import": {
-        "node": "./app/build.node.js",
-        "default": "./app/build.browser.js"
+        "node": "./dist/node/build.esm.mjs",
+        "default": "./dist/browser/build.esm.mjs"
       },
       "require": {
         "node": "./dist/node/build.common.js",
@@ -65,8 +67,9 @@
   },
   "dependencies": {
     "express": "^4.17.3",
-    "node-abort-controller": "^3.0.1",
-    "node-fetch": "^2.6.7"
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.7",
+    "node-fetch-esm": "npm:node-fetch@^3.2.9"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.17.10",
