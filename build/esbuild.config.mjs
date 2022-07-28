@@ -1,7 +1,7 @@
 import { rmSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { buildBanner } from './banner.js';
+import { buildBanner } from './banner.mjs';
 import { build as esBuild } from 'esbuild'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
