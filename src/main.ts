@@ -137,7 +137,7 @@ async function init(type: string,
     if (body instanceof FormData || typeof body === 'string') {
       requestInit.body = body;
     } else {
-      requestInit.body = JSON.stringify(body);
+      requestInit.body = body && JSON.stringify(body);
     }
   }
   const _headers = { ...globalHeaders.getAll(), ...headers } as HeadersInit;

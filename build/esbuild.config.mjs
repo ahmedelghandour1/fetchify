@@ -62,8 +62,9 @@ const nodeESMBuild = () => {
         treeShaking: true,
         sourcemap: false,
         format: 'esm',
-        external: [resolve(__dirname, '../node_modules/*')],
-        inject: [resolve(__dirname, '../src/fetch-polyfill-esm.ts')],
+        // external: [resolve(__dirname, '../node_modules/*')],
+        // inject: [resolve(__dirname, '../src/fetch-polyfill-esm.ts')],
+        inject: [resolve(__dirname, '../src/fetch-polyfill-cj.ts')],
         define: {
             FileOutput: mode !== 'production' && "'dist/node/build.esm.js'"
         }
