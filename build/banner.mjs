@@ -17,7 +17,7 @@ export function buildBanner() {
     const license = pkg.license;
 
     return `/** 
- * fetchify v${version} (${url})
+ * Fetchify v${version} (${url})
  * Copyright ${getYearsRange()} | Author: ${author}
  * Licensed under ${license} (https://github.com/ahmedElghandour1/fetchify/blob/master/LICENSE)
  */

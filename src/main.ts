@@ -147,6 +147,8 @@ async function init(type: string,
   })
 
 
+
+
   requestInit = {
     ...requestInit,
     ...restGlobalConfig,
@@ -161,10 +163,14 @@ async function init(type: string,
   try {
 
     response = await fetch(url, requestInit);
+  const NO_DATA = type === "HEAD" || response.status === 401;
+
     responseType = responseTypes.includes(responseType) ? responseType : 'json';
     let responseBody = {};
     // TODO check if _bodyBlob is valid to use
-    responseBody = await response[responseType]();
+    if(!NO_DATA) {
+      responseBody = await response[responseType]();
+    }
     if (!response.ok) {
       result = {
         meta,
@@ -262,7 +268,7 @@ export async function HEAD<Type = any>(
   route: string,
   {
     params,
-    configs,
+    configs = {},
     headers,
     meta = {},
     timeout
@@ -462,12 +468,3 @@ export {
   getParamsFromString,
   replaceParamsInString
 } from './helpers'
-
-
-
-/**
- * ========  FOR DEBUGGING  ==========
- */
-
-// const x = FileOutput
-// FileOutput && console.log(FileOutput)
