@@ -1,6 +1,6 @@
 {
   "name": "@elghandour/fetchify",
-  "version": "1.0.11",
+  "version": "1.1.0-beta.0",
   "private": false,
   "description": "Universal wrapper for Fetch API",
   "main": "./dist/browser/build.esm.js",
