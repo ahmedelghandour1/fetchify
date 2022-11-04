@@ -11,7 +11,6 @@ export type FetchedData<DataType> = {
   data?: DataType;
   response?: Response;
   error?: any;
-  abort?: () => void;
 };
 export type Configs = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
   baseURL?: string,
@@ -109,7 +108,7 @@ function setURL(baseURL: string | undefined,
   path: string,
   params: Record<string, unknown> = {}): string {
   const url = path.startsWith('http') ? path
-    : `${baseURL}/${path}${serializeObject(params)}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}${serializeObject(params)}`;
 
   return url;
 }
@@ -167,7 +166,6 @@ async function init(type: string,
 
     responseType = responseTypes.includes(responseType) ? responseType : 'json';
     let responseBody = {};
-    // TODO check if _bodyBlob is valid to use
     if(!NO_DATA) {
       responseBody = await response[responseType]();
     }
