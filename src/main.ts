@@ -141,8 +141,8 @@ async function init(type: string,
   let result: any;
   let url: string;
   let response: Response;
-    let fetchParams: FetchifyRequestParameters = JSON.parse(JSON.stringify({
-    headers: { ...globalHeaders.getAll(), ...headers },
+    let fetchParams: FetchifyRequestParameters = {
+    headers: { ...globalHeaders.getAll(), ...headers } as HeadersInit,
     configs: { ...globalConfigs.getAll(), ...configs },
     params,
     body,
@@ -150,7 +150,7 @@ async function init(type: string,
     responseType,
     meta,
     type
-  }));
+  };
 
   if (interceptors.request) {
     fetchParams = interceptors.request(fetchParams) || fetchParams;
