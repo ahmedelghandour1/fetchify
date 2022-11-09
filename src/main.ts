@@ -26,9 +26,20 @@ export type FetchResult = {
 };
 export type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
 export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData' // TODO: need to add the dynamic type
+
+export type FetchifyRequestParameters = {
+  configs: Configs;
+  headers: Partial<HeadersInit>;
+  responseType?: ResponseType;
+  meta: Record<string, any>;
+  path: string;
+  params: Record<string, unknown | any>;
+  body: any;
+  type: string;
+};
 export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
-  request?: (request: RequestInit) => void,
+  request?: (request: FetchifyRequestParameters) => FetchifyRequestParameters,
   response?: (result: FetchResult, requestInit: RequestInit) => Promise<FetchResult>
 }
 /* ================= END TYPES ================= */
@@ -62,6 +73,7 @@ export const globalConfigs = (function globalConfigs() {
     remove,
   };
 }());
+
 
 export const globalHeaders = (function globalHeaders() {
   let _headers: Partial<HeadersInit> = {};
@@ -129,49 +141,55 @@ async function init(type: string,
   let result: any;
   let url: string;
   let response: Response;
-  const globalConfig = globalConfigs.getAll();
-  const { baseURL, ...restGlobalConfig } = globalConfig;
-  requestInit.method = type;
-  if (body && type && type !== 'GET') {
-    if (body instanceof FormData || typeof body === 'string') {
-      requestInit.body = body;
+    let fetchParams: FetchifyRequestParameters = JSON.parse(JSON.stringify({
+    headers: { ...globalHeaders.getAll(), ...headers },
+    configs: { ...globalConfigs.getAll(), ...configs },
+    params,
+    body,
+    path,
+    responseType,
+    meta,
+    type
+  }));
+
+  if (interceptors.request) {
+    fetchParams = interceptors.request(fetchParams) || fetchParams;
+  }
+  requestInit.method = fetchParams.type;
+  if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
+    if (fetchParams.body instanceof FormData || typeof fetchParams.body === 'string') {
+      requestInit.body = fetchParams.body;
     } else {
-      requestInit.body = body && JSON.stringify(body);
+      requestInit.body = fetchParams.body && JSON.stringify(fetchParams.body);
     }
   }
-  const _headers = { ...globalHeaders.getAll(), ...headers } as HeadersInit;
 
-  Object.keys(_headers).forEach((k) => {
-    if (_headers[k] === undefined && typeof _headers[k] === 'undefined') delete _headers[k];
+  Object.keys(fetchParams.headers).forEach((k) => {
+    if (fetchParams.headers[k] === undefined && typeof fetchParams.headers[k] === 'undefined') delete fetchParams.headers[k];
   })
 
 
+  url = setURL(fetchParams.configs.baseURL, fetchParams.path, fetchParams.params);
 
 
   requestInit = {
     ...requestInit,
-    ...restGlobalConfig,
-    ...configs,
-    headers: _headers,
+    ...fetchParams.configs,
+    headers: fetchParams.headers as HeadersInit,
   };
 
-  if (interceptors.request) {
-    interceptors.request(requestInit);
-  }
-  url = setURL(configs.baseURL || baseURL, path, params);
   try {
 
     response = await fetch(url, requestInit);
-  const NO_DATA = type === "HEAD" || response.status === 401;
+    const NO_DATA = fetchParams.type === "HEAD" || response.status === 401;
 
-    responseType = responseTypes.includes(responseType) ? responseType : 'json';
     let responseBody = {};
-    if(!NO_DATA) {
-      responseBody = await response[responseType]();
+    if (!NO_DATA) {
+      responseBody = await response[responseTypes.includes(fetchParams.responseType) ? fetchParams.responseType : 'json']();
     }
     if (!response.ok) {
       result = {
-        meta,
+        meta: fetchParams.meta,
         response,
         error: {
           ...responseBody,
@@ -181,7 +199,7 @@ async function init(type: string,
       throw result;
     }
 
-    result = { data: responseBody, response, meta };
+    result = { data: responseBody, response, meta: fetchParams.meta };
     if (interceptors.response) {
       return interceptors.response(result, requestInit);
     }
