@@ -179,13 +179,14 @@ async function init(type: string,
   };
 
   try {
-
+    
     response = await fetch(url, requestInit);
-    const NO_DATA = fetchParams.type === "HEAD" || response.status === 401;
+    const NO_DATA = fetchParams.type === "HEAD" || response.status === 402;
 
     let responseBody = {};
     if (!NO_DATA) {
       responseBody = await response[responseTypes.includes(fetchParams.responseType) ? fetchParams.responseType : 'json']();
+      
     }
     if (!response.ok) {
       result = {
@@ -195,7 +196,7 @@ async function init(type: string,
           ...responseBody,
         },
       };
-
+      
       throw result;
     }
 
@@ -206,7 +207,7 @@ async function init(type: string,
 
     return result;
   } catch (error: any) {
-
+    
     const isTypeError = error instanceof Error && !('response' in error);
     const errResponse: FetchResult = isTypeError ?
       {
