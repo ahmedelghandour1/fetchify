@@ -181,7 +181,11 @@ async function init(type: string,
   try {
     
     response = await fetch(url, requestInit);
-    const NO_DATA = fetchParams.type === "HEAD" || response.status === 402;
+    
+    const NO_DATA = fetchParams.type === "HEAD" || response.status === 204;
+
+    console.log("No data from fetchify?????", NO_DATA);
+    
 
     let responseBody = {};
     if (!NO_DATA) {
@@ -204,6 +208,8 @@ async function init(type: string,
     if (interceptors.response) {
       return interceptors.response(result, requestInit);
     }
+    console.log(result);
+    
 
     return result;
   } catch (error: any) {
