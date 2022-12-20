@@ -184,7 +184,6 @@ async function init(type: string,
     
     const NO_DATA = fetchParams.type === "HEAD" || response.status === 204;
 
-    console.log("No data from fetchify?????", NO_DATA);
     
 
     let responseBody = {};
@@ -208,7 +207,6 @@ async function init(type: string,
     if (interceptors.response) {
       return interceptors.response(result, requestInit);
     }
-    console.log(result);
     
 
     return result;
