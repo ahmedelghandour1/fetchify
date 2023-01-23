@@ -1,23 +1,8 @@
 {
-  "name": "@elghandour/fetchify",
-  "version": "1.1.2-beta.3",
-  "private": false,
-  "description": "Universal wrapper for Fetch API",
-  "main": "./dist/browser/build.esm.js",
-  "types": "./dist/types/main.d.ts",
-  "typings": "./dist/types/main.d.ts",
-  "jsdelivr": "dist/build.umd.js",
-  "unpkg": "dist/build.umd.js",
+  "name": "@elghandour/fetchify-monorepo",
+  "private": true,
   "engines": {
     "node": ">=14.16"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ahmedElghandour1/fetchify.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ahmedElghandour1/fetchify/issues",
-    "email": "elghandour.12@gmail.com"
   },
   "homepage": "https://github.com/ahmedElghandour1/fetchify#readme",
   "author": "Ahmed Elghandour",
@@ -33,43 +18,6 @@
     "http",
     "promise"
   ],
-  "scripts": {
-    "install:packages": "node ./build/install.mjs",
-    "server": "nodemon ./server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=production node ./build/esbuild.config.mjs && tsc --emitDeclarationOnly",
-    "watch:types": "tsc --emitDeclarationOnly --watch",
-    "watch:ts": "cross-env WATCH=1 NODE_ENV=development  node ./build/esbuild.config.mjs",
-    "watch": "concurrently  \"npm:watch:types\" \"npm:watch:ts\"",
-    "prepublish": "npm run build",
-    "prepublishOnly": "npm run build",
-    "preversion": "npm run build"
-  },
-  "files": [
-    "dist/**/*.js",
-    "dist/**/*.mjs",
-    "dist/types/main.d.ts",
-    "*"
-  ],
-  "exports": {
-    ".": {
-      "import": {
-        "default": "./dist/browser/build.esm.js"
-      },
-      "require": {
-        "default": "./dist/browser/build.common.js"
-      },
-      "types": "./dist/types/main.d.ts"
-    },
-    "./dist/*": "./dist/*",
-    "./package.json": "./package.json",
-    "./nodejs-polyfills.mjs": "./polyfills/nodejs-polyfills.mjs"
-  },
-  "dependencies": {
-    "express": "^4.17.3",
-    "form-data": "^4.0.0",
-    "node-fetch": "^3.2.10"
-  },
   "devDependencies": {
     "@types/node": "^17.0.32",
     "babel-loader": "^8.2.5",
@@ -79,6 +27,14 @@
     "nodemon": "^2.0.15",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.8.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "nx": "14.8.2",
+    "lerna": "^5.5.4",
+    "husky": "^8.0.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@elghandour/fetchify": "workspace:*"
+    }
   }
 }
