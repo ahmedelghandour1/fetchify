@@ -11,6 +11,7 @@ export type FetchedData<DataType> = {
   data?: DataType;
   response?: Response;
   error?: any;
+  meta: Record<string, any> | null;
 };
 export type Configs = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
   baseURL?: string,
@@ -19,10 +20,12 @@ export type FetchResult = {
   data: any;
   response: Response;
   error?: undefined;
+  meta: Record<string, any> | null;
 } | {
   error: any;
   data?: undefined;
   response?: undefined;
+  meta: Record<string, any> | null;
 };
 export type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
 export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData' // TODO: need to add the dynamic type
@@ -40,7 +43,7 @@ export type FetchifyRequestParameters = {
 export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
   request?: (request: FetchifyRequestParameters) => FetchifyRequestParameters,
-  response?: (result: FetchResult, requestInit: RequestInit) => Promise<FetchResult>
+  response?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>
 }
 /* ================= END TYPES ================= */
 
@@ -141,7 +144,7 @@ async function init(type: string,
   let result: any;
   let url: string;
   let response: Response;
-    let fetchParams: FetchifyRequestParameters = {
+  let fetchParams: FetchifyRequestParameters = {
     headers: { ...globalHeaders.getAll(), ...headers } as HeadersInit,
     configs: { ...globalConfigs.getAll(), ...configs },
     params,
@@ -205,7 +208,7 @@ async function init(type: string,
 
     result = { data: responseBody, response, meta: fetchParams.meta };
     if (interceptors.response) {
-      return interceptors.response(result, requestInit);
+      return interceptors.response(result, requestInit, fetchParams);
     }
     
 
@@ -218,11 +221,12 @@ async function init(type: string,
         error: {
           name: error.name,
           message: error.message
-        }
+        },
+        meta: fetchParams.meta,
       }
       : error;
     if (interceptors.response) {
-      return interceptors.response(errResponse, requestInit);
+      return interceptors.response(errResponse, requestInit, fetchParams);
 
     }
 
@@ -281,7 +285,8 @@ export async function GET<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -317,7 +322,8 @@ export async function HEAD<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -361,7 +367,8 @@ export async function POST<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -397,7 +404,8 @@ export async function PUT<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 
@@ -432,7 +440,8 @@ export async function DELETE<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 
@@ -467,7 +476,8 @@ export async function PATCH<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 
