@@ -156,7 +156,7 @@ async function init(type: string,
   };
 
   if (interceptors.request) {
-    fetchParams = interceptors.request(fetchParams) || fetchParams;
+    fetchParams = {...fetchParams, ...interceptors.request(fetchParams)};
   }
   requestInit.method = fetchParams.type;
   if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
@@ -205,6 +205,8 @@ async function init(type: string,
       
       throw result;
     }
+
+    
 
     result = { data: responseBody, response, meta: fetchParams.meta };
     if (interceptors.response) {
