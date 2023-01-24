@@ -1,8 +1,18 @@
-import f, { GET } from './../../../dist/browser/build.esm.js';
+import f, { GET, setInterceptors } from '../../../packages/fetchify/dist/browser/build.esm.js';
+/** @type {import('../../../packages/fetchify/dist/types/main')} */
 
-console.log(GET, f);
+setInterceptors({
+    response: (result,
+        requestInit,
+        fetchifyParams) => {
+        console.log(fetchifyParams);
+        return result;
+    }
+});
+
 (async function () {
-    const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
+    const { data, error, response, meta } = await GET('https://jsonplaceholder.typicode.com/posts');
+    console.log(meta);
     if (response.status === 200 && data) {
         const appElement = document.querySelector('#app');
         const setPost = (post) => (
