@@ -123,10 +123,8 @@ export function setInterceptors({ request, response }: Interceptors): void {
 function setURL(baseURL: string | undefined,
   path: string,
   params: Record<string, unknown> = {}): string {
-  console.log(qs);
-
   const url = path.startsWith('http') ? path
-    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}?${qs.stringify(params, {skipNulls: true})}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}?${qs.stringify(params, { skipNulls: true })}`;
 
   return url;
 }
