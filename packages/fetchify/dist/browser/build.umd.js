@@ -1,5 +1,5 @@
 /** 
- * Fetchify v1.1.2-beta.4 (https://github.com/ahmedElghandour1/fetchify#readme)
+ * Fetchify v1.1.2-beta.6 (https://github.com/ahmedElghandour1/fetchify#readme)
  * Copyright 2021 - 2023 | Author: Ahmed Elghandour
  * Licensed under MIT (https://github.com/ahmedElghandour1/fetchify/blob/master/LICENSE)
  */
