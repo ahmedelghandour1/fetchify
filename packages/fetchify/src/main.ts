@@ -126,7 +126,7 @@ function setURL(baseURL: string | undefined,
   console.log(qs);
 
   const url = path.startsWith('http') ? path
-    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}?${qs.stringify(params)}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}?${qs.stringify(params, {skipNulls: true})}`;
 
   return url;
 }

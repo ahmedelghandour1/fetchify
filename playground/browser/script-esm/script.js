@@ -15,7 +15,7 @@ globalConfigs.set({
 });
 
 (async function () {
-    const { data, error, response, meta } = await GET('posts', { params: { test: "1", test2: { test_child: "hello", hi: [1, 3, "fdgdsgdsgds"] } } });
+    const { data, error, response, meta } = await GET('posts', { params: { test: "1", test2: { test_child: "hello", hi: [1, 3, "fdgdsgdsgds"], test4: null, test44: undefined, testeg44: "undefined" } } });
     console.log(meta);
     if (response.status === 200 && data) {
         const appElement = document.querySelector('#app');
