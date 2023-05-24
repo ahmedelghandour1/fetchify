@@ -1,4 +1,4 @@
-import f, { GET, setInterceptors } from '../../../packages/fetchify/dist/browser/build.esm.js';
+import { GET, setInterceptors, globalConfigs } from '../../../packages/fetchify/dist/browser/build.esm.js';
 /** @type {import('../../../packages/fetchify/dist/types/main')} */
 
 setInterceptors({
@@ -9,9 +9,13 @@ setInterceptors({
         return result;
     }
 });
+console.log(globalConfigs.set({ TEST: "" }));
+globalConfigs.set({
+    baseURL: "https://jsonplaceholder.typicode.com"
+});
 
 (async function () {
-    const { data, error, response, meta } = await GET('https://jsonplaceholder.typicode.com/posts');
+    const { data, error, response, meta } = await GET('posts', { params: { test: "1", test2: { test_child: "hello", hi: [1, 3, "fdgdsgdsgds"] } } });
     console.log(meta);
     if (response.status === 200 && data) {
         const appElement = document.querySelector('#app');

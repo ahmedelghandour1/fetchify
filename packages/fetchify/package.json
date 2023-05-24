@@ -65,9 +65,12 @@
     "./nodejs-polyfills.mjs": "./polyfills/nodejs-polyfills.mjs"
   },
   "dependencies": {
+    "@types/qs": "^6.9.7",
     "express": "^4.17.3",
     "form-data": "^4.0.0",
-    "node-fetch": "^3.2.10"
+    "install": "^0.13.0",
+    "node-fetch": "^3.2.10",
+    "qs": "^6.11.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.32",
@@ -75,11 +78,11 @@
     "concurrently": "^7.2.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.14.50",
+    "lerna": "^5.5.4",
     "nodemon": "^2.0.15",
+    "nx": "14.8.2",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.8.0",
-    "typescript": "^4.6.4",
-    "nx": "14.8.2",
-    "lerna": "^5.5.4"
+    "typescript": "^4.6.4"
   }
 }

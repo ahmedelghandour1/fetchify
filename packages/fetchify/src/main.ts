@@ -2,6 +2,7 @@
 import {
   serializeObject
 } from './helpers';
+import qs from "qs";
 
 declare const FileOutput: string;
 
@@ -122,8 +123,10 @@ export function setInterceptors({ request, response }: Interceptors): void {
 function setURL(baseURL: string | undefined,
   path: string,
   params: Record<string, unknown> = {}): string {
+  console.log(qs);
+
   const url = path.startsWith('http') ? path
-    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}${serializeObject(params)}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}?${qs.stringify(params)}`;
 
   return url;
 }
@@ -156,7 +159,7 @@ async function init(type: string,
   };
 
   if (interceptors.request) {
-    fetchParams = {...fetchParams, ...interceptors.request(fetchParams)};
+    fetchParams = { ...fetchParams, ...interceptors.request(fetchParams) };
   }
   requestInit.method = fetchParams.type;
   if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
@@ -182,17 +185,17 @@ async function init(type: string,
   };
 
   try {
-    
+
     response = await fetch(url, requestInit);
-    
+
     const NO_DATA = fetchParams.type === "HEAD" || response.status === 204;
 
-    
+
 
     let responseBody = {};
     if (!NO_DATA) {
       responseBody = await response[responseTypes.includes(fetchParams.responseType) ? fetchParams.responseType : 'json']();
-      
+
     }
     if (!response.ok) {
       result = {
@@ -202,21 +205,21 @@ async function init(type: string,
           ...responseBody,
         },
       };
-      
+
       throw result;
     }
 
-    
+
 
     result = { data: responseBody, response, meta: fetchParams.meta };
     if (interceptors.response) {
       return interceptors.response(result, requestInit, fetchParams);
     }
-    
+
 
     return result;
   } catch (error: any) {
-    
+
     const isTypeError = error instanceof Error && !('response' in error);
     const errResponse: FetchResult = isTypeError ?
       {
