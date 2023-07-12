@@ -1,7 +1,6 @@
 {
   "name": "@elghandour/fetchify",
   "description": "Universal wrapper for Fetch API",
-  "private": true,
   "version": "1.1.3-beta.1",
   "type": "module",
   "main": "./dist/build.umd.cjs",
