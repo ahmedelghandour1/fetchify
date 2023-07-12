@@ -1,5 +1,5 @@
 {
-  "name": "@elghandour/fetchify",
+  "name": "@elghandour/fetchify-old",
   "version": "1.1.2-beta.8",
   "private": false,
   "description": "Universal wrapper for Fetch API",
