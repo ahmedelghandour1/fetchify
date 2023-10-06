@@ -128,7 +128,7 @@ function setURL(baseURL: string | undefined,
 async function init(type: string,
   path: string,
   {
-    params = {}, configs = {}, body, headers = {}, responseType = 'json', meta = {}
+    params = {}, configs = {}, body, headers = {}, responseType = 'json', meta = {}, requestInterceptor = undefined, responseInterceptor = undefined
   }: {
     params?: Record<string, unknown | any>;
     configs?: Configs;
@@ -136,6 +136,8 @@ async function init(type: string,
     headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta: Record<string, any>;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   }): Promise<FetchResult> {
   let requestInit: RequestInit = {};
   let result: any;
@@ -152,8 +154,14 @@ async function init(type: string,
     type
   };
 
-  if (interceptors.request) {
+
+  if (interceptors.request && !requestInterceptor) {
     fetchParams = { ...fetchParams, ...interceptors.request(fetchParams) };
+  }
+
+  if (requestInterceptor) {
+    fetchParams = { ...fetchParams, ...requestInterceptor(fetchParams) };
+
   }
   requestInit.method = fetchParams.type;
   if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
@@ -207,8 +215,12 @@ async function init(type: string,
 
 
     result = { data: responseBody, response, meta: fetchParams.meta };
-    if (interceptors.response) {
+    if (interceptors.response && !responseInterceptor) {
       return interceptors.response(result, requestInit, fetchParams);
+    }
+
+    if (responseInterceptor) {
+      return responseInterceptor(result, requestInit, fetchParams)
     }
 
 
@@ -259,7 +271,10 @@ export async function GET<Type = any>(
     headers,
     responseType,
     meta = {},
-    timeout
+    timeout,
+    requestInterceptor = undefined,
+    responseInterceptor = undefined
+
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
@@ -267,6 +282,8 @@ export async function GET<Type = any>(
     responseType?: ResponseType,
     meta?: Record<string, any>,
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -279,7 +296,7 @@ export async function GET<Type = any>(
     abortCallback(controller);
   }
   const timerId = HandleTimeOut(timeout, controller);
-  const { data, response, error } = await init('GET', route, { params, configs, headers, responseType, meta });
+  const { data, response, error } = await init('GET', route, { params, configs, headers, responseType, meta, requestInterceptor, responseInterceptor });
   clearTimeout(timerId);
 
   return {
@@ -297,13 +314,17 @@ export async function HEAD<Type = any>(
     configs = {},
     headers,
     meta = {},
-    timeout
+    timeout,
+    requestInterceptor = undefined,
+    responseInterceptor = undefined
   }: {
     params?: Record<string, unknown | any>,
     configs?: Configs,
     headers?: Partial<HeadersInit>,
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -316,7 +337,7 @@ export async function HEAD<Type = any>(
     abortCallback(controller);
   }
   const timerId = HandleTimeOut(timeout, controller);
-  const { data, response, error } = await init('HEAD', route, { params, configs, headers, meta });
+  const { data, response, error } = await init('HEAD', route, { params, configs, headers, meta, requestInterceptor, responseInterceptor });
   clearTimeout(timerId);
 
   return {
@@ -336,7 +357,9 @@ export async function POST<Type = any>(
     headers = {},
     responseType,
     meta = {},
-    timeout
+    timeout,
+    requestInterceptor = undefined,
+    responseInterceptor = undefined
 
   }: {
     body?: any,
@@ -346,6 +369,8 @@ export async function POST<Type = any>(
     responseType?: ResponseType,
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -360,7 +385,7 @@ export async function POST<Type = any>(
   const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('POST', route,
     {
-      params, configs, body, headers, responseType, meta
+      params, configs, body, headers, responseType, meta, requestInterceptor, responseInterceptor
     });
   clearTimeout(timerId);
 
@@ -374,7 +399,8 @@ export async function POST<Type = any>(
 
 export async function PUT<Type = any>(route: string,
   {
-    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout
+    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout, requestInterceptor = undefined,
+    responseInterceptor = undefined
 
   }: {
     body?: any;
@@ -384,6 +410,8 @@ export async function PUT<Type = any>(route: string,
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -397,7 +425,7 @@ export async function PUT<Type = any>(route: string,
   }
   const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('PUT', route, {
-    params, configs, body, headers, responseType, meta
+    params, configs, body, headers, responseType, meta, requestInterceptor, responseInterceptor
   });
   clearTimeout(timerId);
 
@@ -412,7 +440,9 @@ export async function PUT<Type = any>(route: string,
 export async function DELETE<Type = any>(route: string,
   {
     body = {}, params, configs = {}, headers = {}, responseType, meta = {},
-    timeout
+    timeout,
+    requestInterceptor = undefined,
+    responseInterceptor = undefined
   }: {
     body?: any;
     params?: Record<string, unknown | any>;
@@ -421,6 +451,8 @@ export async function DELETE<Type = any>(route: string,
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
@@ -433,7 +465,7 @@ export async function DELETE<Type = any>(route: string,
   }
   const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('DELETE', route, {
-    params, configs, body, headers, responseType, meta
+    params, configs, body, headers, responseType, meta, requestInterceptor, responseInterceptor
   });
   clearTimeout(timerId);
 
@@ -447,7 +479,8 @@ export async function DELETE<Type = any>(route: string,
 
 export async function PATCH<Type = any>(route: string,
   {
-    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout
+    body = {}, params, configs = {}, headers = {}, responseType, meta = {}, timeout, requestInterceptor = undefined,
+    responseInterceptor = undefined
 
   }: {
     body?: any;
@@ -457,6 +490,8 @@ export async function PATCH<Type = any>(route: string,
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
   } = {},
   abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
@@ -469,7 +504,7 @@ export async function PATCH<Type = any>(route: string,
   }
   const timerId = HandleTimeOut(timeout, controller);
   const { data, response, error } = await init('PATCH', route, {
-    params, configs, body, headers, responseType, meta
+    params, configs, body, headers, responseType, meta, requestInterceptor, responseInterceptor
   });
   clearTimeout(timerId);
 
