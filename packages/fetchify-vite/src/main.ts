@@ -44,9 +44,8 @@ export interface Interceptors {
 /* ================= END TYPES ================= */
 
 const responseTypes: Array<ResponseType> = ['json', 'text', 'blob', 'arrayBuffer', 'formData'];
-
-export const globalConfigs = (function globalConfigs() {
-  let _configs: Configs = {};
+export function defineConfigs(configs: Configs = {}) {
+  let _configs: Configs = configs;
   const getAll = function getAll(): Configs {
     return _configs;
   };
@@ -71,11 +70,10 @@ export const globalConfigs = (function globalConfigs() {
     update,
     remove,
   };
-}());
+}
 
-
-export const globalHeaders = (function globalHeaders() {
-  let _headers: Partial<HeadersInit> = {};
+export function defineHeaders(headers: Partial<HeadersInit> = {}) {
+  let _headers: Partial<HeadersInit> = headers;
 
   const getAll = function getAll(): Partial<HeadersInit> {
     return _headers;
@@ -101,7 +99,11 @@ export const globalHeaders = (function globalHeaders() {
     update,
     remove,
   };
-}());
+}
+
+export const globalConfigs = (defineConfigs());
+
+export const globalHeaders = (defineHeaders());
 
 const interceptors: Interceptors = {
   request: undefined,
