@@ -419,6 +419,7 @@ export async function PUT<Type = any>(route: string,
 ): FetchData<Type> {
   const controller = setFetchAbort();
   if (controller instanceof AbortController) {
+
     configs.signal = controller.signal;
   }
 
