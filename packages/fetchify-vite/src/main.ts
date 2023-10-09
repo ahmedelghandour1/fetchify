@@ -38,7 +38,7 @@ export type FetchifyRequestParameters = {
 };
 export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
-  request?: (request: FetchifyRequestParameters) => FetchifyRequestParameters,
+  request?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>,
   response?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>
 }
 /* ================= END TYPES ================= */
@@ -139,7 +139,7 @@ async function init(type: string,
     responseType?: ResponseType;
     meta: Record<string, any>;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   }): Promise<FetchResult> {
   let requestInit: RequestInit = {};
   let result: any;
@@ -158,11 +158,11 @@ async function init(type: string,
 
 
   if (interceptors.request && !requestInterceptor) {
-    fetchParams = { ...fetchParams, ...interceptors.request(fetchParams) };
+    fetchParams = { ...fetchParams, ...(await interceptors.request(fetchParams)) };
   }
 
   if (requestInterceptor) {
-    fetchParams = { ...fetchParams, ...requestInterceptor(fetchParams) };
+    fetchParams = { ...fetchParams, ...(await requestInterceptor(fetchParams)) };
 
   }
   requestInit.method = fetchParams.type;
@@ -285,7 +285,7 @@ export async function GET<Type = any>(
     meta?: Record<string, any>,
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -326,7 +326,7 @@ export async function HEAD<Type = any>(
     meta?: Record<string, any>;
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -372,7 +372,7 @@ export async function POST<Type = any>(
     meta?: Record<string, any>;
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -413,7 +413,7 @@ export async function PUT<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void
 ): FetchData<Type> {
@@ -454,7 +454,7 @@ export async function DELETE<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
@@ -493,7 +493,7 @@ export async function PATCH<Type = any>(route: string,
     meta?: Record<string, any>;
     timeout?: number;
     responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
-    requestInterceptor?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
   } = {},
   abortCallback?: (controller: AbortController) => void): FetchData<Type> {
   const controller = setFetchAbort();
