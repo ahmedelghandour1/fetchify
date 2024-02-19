@@ -167,7 +167,27 @@ async function init(type: string,
   }
   requestInit.method = fetchParams.type;
   if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
-    if (fetchParams.body instanceof FormData || typeof fetchParams.body === 'string') {
+    if (
+      fetchParams.body instanceof FormData
+      || typeof fetchParams.body === 'string'
+      || fetchParams.body instanceof ArrayBuffer
+      || fetchParams.body instanceof Int8Array
+      || fetchParams.body instanceof Uint8Array
+      || fetchParams.body instanceof Uint8ClampedArray
+      || fetchParams.body instanceof Int16Array
+      || fetchParams.body instanceof Uint16Array
+      || fetchParams.body instanceof Int32Array
+      || fetchParams.body instanceof Uint32Array
+      || fetchParams.body instanceof Float32Array
+      || fetchParams.body instanceof Float64Array
+      || fetchParams.body instanceof BigInt64Array
+      || fetchParams.body instanceof BigUint64Array
+      || fetchParams.body instanceof DataView
+      || fetchParams.body instanceof Blob
+      || fetchParams.body instanceof File
+      || fetchParams.body instanceof Uint8Array
+      || fetchParams.body instanceof URLSearchParams
+    ) {
       requestInit.body = fetchParams.body;
     } else {
       requestInit.body = fetchParams.body && JSON.stringify(fetchParams.body);
