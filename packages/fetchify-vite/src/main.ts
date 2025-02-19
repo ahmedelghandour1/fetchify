@@ -122,7 +122,7 @@ function setURL(baseURL: string | undefined,
   params: Record<string, unknown> = {}): string {
   const stringifiedParams = qs.stringify(params, { skipNulls: true });
   const url = path.startsWith('http') ? path
-    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}${stringifiedParams ? "?" + qs.stringify(params, { skipNulls: true }) : ""}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}${stringifiedParams ? "?" + qs.stringify(params, { skipNulls: true, arrayFormat: "repeat" }) : ""}`;
 
   return url;
 }
