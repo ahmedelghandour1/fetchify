@@ -24,63 +24,6 @@ const baseConfig = (src) => {
     return config;
 }
 
-//nodejs
-const nodeCommonJsBuild = () => {
-    /**  @type {import('esbuild').BuildOptions}  */
-    const config = {
-        platform: 'node',
-        outfile: resolve(__dirname, '../dist/node/build.common.js'),
-        loader: { ".ts": 'ts' },
-        bundle: true,
-        treeShaking: false,
-        sourcemap: false,
-        format: 'cjs',
-        inject: [resolve(__dirname, '../src/fetch-polyfill-cj.ts')],
-        define: {
-            FileOutput: mode !== 'production' && "'dist/node/build.common.js'"
-        }
-    }
-
-    if (mode === 'development') {
-        config.watch = {
-            onRebuild(error, result) {
-                if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.common.js')
-            },
-        }
-    }
-
-    return config;
-}
-const nodeESMBuild = () => {
-    /**  @type {import('esbuild').BuildOptions}  */
-    const config = {
-        platform: 'node',
-        outfile: resolve(__dirname, '../dist/node/build.esm.js'),
-        loader: { ".ts": 'ts' },
-        bundle: true,
-        treeShaking: true,
-        sourcemap: false,
-        format: 'esm',
-        // external: [resolve(__dirname, '../node_modules/*')],
-        // inject: [resolve(__dirname, '../src/fetch-polyfill-esm.ts')],
-        inject: [resolve(__dirname, '../src/fetch-polyfill-cj.ts')],
-        define: {
-            FileOutput: mode !== 'production' && "'dist/node/build.esm.js'"
-        }
-    }
-
-    if (mode === 'development') {
-        config.watch = {
-            onRebuild(error, result) {
-                if (error) console.error('watch build failed:', error)
-                else console.log('watch build succeeded: build.esm.js')
-            },
-        }
-    }
-
-    return config;
-}
 
 //browser
 const UMDBuild = () => {
@@ -180,33 +123,19 @@ rmSync(resolve(__dirname, '../dist'), { force: true, recursive: true });
 
 /** build.common.js */
 build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/browser.ts')),
+    ...baseConfig(resolve(__dirname, '../src/main.ts')),
     ...browserCommonJsBuild()
 })
 
 /** build.umd.js */
 build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/browser.ts')),
+    ...baseConfig(resolve(__dirname, '../src/main.ts')),
     ...UMDBuild()
 })
 
 /** build.esm.js */
 build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/browser.ts')),
+    ...baseConfig(resolve(__dirname, '../src/main.ts')),
     ...browserESMBuild()
 })
 
-
-//=========== NODEJS ============
-
-/** build.common.js */
-build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/nodejs.ts')),
-    ...nodeCommonJsBuild()
-})
-
-/** build.esm.js */
-build({
-    ...baseConfig(resolve(__dirname, '../src/platforms/nodejs.ts')),
-    ...nodeESMBuild()
-})

@@ -1,3 +1,8 @@
+/**
+ * ! ============= DEPRECATED =============
+ * script to install node_modules for sub modules 
+ */
+
 import { readdirSync, existsSync, statSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import cp from 'child_process';

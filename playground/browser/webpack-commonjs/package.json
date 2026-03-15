@@ -1,16 +1,16 @@
 {
   "name": "fetchify-example-wp-cmjs",
+  "private": true,
   "version": "1.0.0",
-  "description": "",
   "scripts": {
-    "install": "npm install ../../../",
     "watch": "webpack --config ./webpack.config.js --watch --mode development --env development",
-    "build": "webpack --config ./webpack.config.js --mode production --env production",
-    "postinstall": "npm run build"
+    "build": "webpack --config ./webpack.config.js --mode production --env production"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@elghandour/fetchify": "file:../../.."
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "@elghandour/fetchify": "workspace:*"
   }
 }

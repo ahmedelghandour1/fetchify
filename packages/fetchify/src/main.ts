@@ -2,6 +2,7 @@
 import {
   serializeObject
 } from './helpers';
+import qs from "qs";
 
 declare const FileOutput: string;
 
@@ -11,7 +12,7 @@ export type FetchedData<DataType> = {
   data?: DataType;
   response?: Response;
   error?: any;
-  abort?: () => void;
+  meta: Record<string, any> | null;
 };
 export type Configs = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
   baseURL?: string,
@@ -20,17 +21,30 @@ export type FetchResult = {
   data: any;
   response: Response;
   error?: undefined;
+  meta: Record<string, any> | null;
 } | {
   error: any;
   data?: undefined;
   response?: undefined;
+  meta: Record<string, any> | null;
 };
 export type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
 export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData' // TODO: need to add the dynamic type
+
+export type FetchifyRequestParameters = {
+  configs: Configs;
+  headers: Partial<HeadersInit>;
+  responseType?: ResponseType;
+  meta: Record<string, any>;
+  path: string;
+  params: Record<string, unknown | any>;
+  body: any;
+  type: string;
+};
 export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
-  request?: (request: RequestInit) => void,
-  response?: (result: FetchResult, requestInit: RequestInit) => Promise<FetchResult>
+  request?: (request: FetchifyRequestParameters) => FetchifyRequestParameters,
+  response?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>
 }
 /* ================= END TYPES ================= */
 
@@ -63,6 +77,7 @@ export const globalConfigs = (function globalConfigs() {
     remove,
   };
 }());
+
 
 export const globalHeaders = (function globalHeaders() {
   let _headers: Partial<HeadersInit> = {};
@@ -108,8 +123,9 @@ export function setInterceptors({ request, response }: Interceptors): void {
 function setURL(baseURL: string | undefined,
   path: string,
   params: Record<string, unknown> = {}): string {
+  const stringifiedParams = qs.stringify(params, { skipNulls: true });
   const url = path.startsWith('http') ? path
-    : `${baseURL}/${path}${serializeObject(params)}`;
+    : `${baseURL}${path.startsWith("/") ? "" : "/"}${path}${stringifiedParams ? "?" + qs.stringify(params, { skipNulls: true }) : ""}`;
 
   return url;
 }
@@ -130,50 +146,59 @@ async function init(type: string,
   let result: any;
   let url: string;
   let response: Response;
-  const globalConfig = globalConfigs.getAll();
-  const { baseURL, ...restGlobalConfig } = globalConfig;
-  requestInit.method = type;
-  if (body && type && type !== 'GET') {
-    if (body instanceof FormData || typeof body === 'string') {
-      requestInit.body = body;
+  let fetchParams: FetchifyRequestParameters = {
+    headers: { ...globalHeaders.getAll(), ...headers } as HeadersInit,
+    configs: { ...globalConfigs.getAll(), ...configs },
+    params,
+    body,
+    path,
+    responseType,
+    meta,
+    type
+  };
+
+  if (interceptors.request) {
+    fetchParams = { ...fetchParams, ...interceptors.request(fetchParams) };
+  }
+  requestInit.method = fetchParams.type;
+  if (fetchParams.body && fetchParams.type && fetchParams.type !== 'GET') {
+    if (fetchParams.body instanceof FormData || typeof fetchParams.body === 'string') {
+      requestInit.body = fetchParams.body;
     } else {
-      requestInit.body = body && JSON.stringify(body);
+      requestInit.body = fetchParams.body && JSON.stringify(fetchParams.body);
     }
   }
-  const _headers = { ...globalHeaders.getAll(), ...headers } as HeadersInit;
 
-  Object.keys(_headers).forEach((k) => {
-    if (_headers[k] === undefined && typeof _headers[k] === 'undefined') delete _headers[k];
+  Object.keys(fetchParams.headers).forEach((k) => {
+    if (fetchParams.headers[k] === undefined && typeof fetchParams.headers[k] === 'undefined') delete fetchParams.headers[k];
   })
 
 
+  url = setURL(fetchParams.configs.baseURL, fetchParams.path, fetchParams.params);
 
 
   requestInit = {
     ...requestInit,
-    ...restGlobalConfig,
-    ...configs,
-    headers: _headers,
+    ...fetchParams.configs,
+    headers: fetchParams.headers as HeadersInit,
   };
 
-  if (interceptors.request) {
-    interceptors.request(requestInit);
-  }
-  url = setURL(configs.baseURL || baseURL, path, params);
   try {
 
     response = await fetch(url, requestInit);
-  const NO_DATA = type === "HEAD" || response.status === 401;
 
-    responseType = responseTypes.includes(responseType) ? responseType : 'json';
+    const NO_DATA = fetchParams.type === "HEAD" || response.status === 204;
+
+
+
     let responseBody = {};
-    // TODO check if _bodyBlob is valid to use
-    if(!NO_DATA) {
-      responseBody = await response[responseType]();
+    if (!NO_DATA) {
+      responseBody = await response[responseTypes.includes(fetchParams.responseType) ? fetchParams.responseType : 'json']();
+
     }
     if (!response.ok) {
       result = {
-        meta,
+        meta: fetchParams.meta,
         response,
         error: {
           ...responseBody,
@@ -183,10 +208,13 @@ async function init(type: string,
       throw result;
     }
 
-    result = { data: responseBody, response, meta };
+
+
+    result = { data: responseBody, response, meta: fetchParams.meta };
     if (interceptors.response) {
-      return interceptors.response(result, requestInit);
+      return interceptors.response(result, requestInit, fetchParams);
     }
+
 
     return result;
   } catch (error: any) {
@@ -197,11 +225,12 @@ async function init(type: string,
         error: {
           name: error.name,
           message: error.message
-        }
+        },
+        meta: fetchParams.meta,
       }
       : error;
     if (interceptors.response) {
-      return interceptors.response(errResponse, requestInit);
+      return interceptors.response(errResponse, requestInit, fetchParams);
 
     }
 
@@ -260,7 +289,8 @@ export async function GET<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -296,7 +326,8 @@ export async function HEAD<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -340,7 +371,8 @@ export async function POST<Type = any>(
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 };
 
@@ -376,7 +408,8 @@ export async function PUT<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 
@@ -411,7 +444,8 @@ export async function DELETE<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 
@@ -446,7 +480,8 @@ export async function PATCH<Type = any>(route: string,
   return {
     data,
     response,
-    error
+    error,
+    meta
   };
 }
 

@@ -1,8 +1,22 @@
-import f, { GET } from './../../../dist/browser/build.esm.js';
+import { GET, setInterceptors, globalConfigs } from '../../../packages/fetchify/dist/browser/build.esm.js';
+/** @type {import('../../../packages/fetchify/dist/types/main')} */
 
-console.log(GET, f);
+setInterceptors({
+    response: (result,
+        requestInit,
+        fetchifyParams) => {
+        console.log(fetchifyParams);
+        return result;
+    }
+});
+console.log(globalConfigs.set({ TEST: "" }));
+globalConfigs.set({
+    baseURL: "https://jsonplaceholder.typicode.com"
+});
+
 (async function () {
-    const { data, error, response } = await GET('https://jsonplaceholder.typicode.com/posts');
+    const { data, error, response, meta } = await GET('posts', { params: { test: "1", test2: { test_child: "hello", hi: [1, 3, "fdgdsgdsgds"], test4: null, test44: undefined, testeg44: "undefined" } } });
+    console.log(meta);
     if (response.status === 200 && data) {
         const appElement = document.querySelector('#app');
         const setPost = (post) => (
