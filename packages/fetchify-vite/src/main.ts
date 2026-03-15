@@ -188,7 +188,7 @@ async function init(type: string,
       || fetchParams.body instanceof Uint8Array
       || fetchParams.body instanceof URLSearchParams
     ) {
-      requestInit.body = fetchParams.body;
+      requestInit.body = fetchParams.body as BodyInit;
     } else {
       requestInit.body = fetchParams.body && JSON.stringify(fetchParams.body);
     }
