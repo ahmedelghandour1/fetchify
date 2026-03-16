@@ -1,13 +1,13 @@
-export declare type FetchedData<DataType> = {
+export type FetchedData<DataType> = {
     data?: DataType;
     response?: Response;
     error?: any;
     meta: Record<string, any> | null;
 };
-export declare type Configs = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
+export type Configs = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
     baseURL?: string;
 };
-export declare type FetchResult = {
+export type FetchResult = {
     data: any;
     response: Response;
     error?: undefined;
@@ -18,9 +18,9 @@ export declare type FetchResult = {
     response?: undefined;
     meta: Record<string, any> | null;
 };
-export declare type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
-export declare type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData';
-export declare type FetchifyRequestParameters = {
+export type Method = 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH' | 'HEAD';
+export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData';
+export type FetchifyRequestParameters = {
     configs: Configs;
     headers: Partial<HeadersInit>;
     responseType?: ResponseType;
@@ -30,11 +30,23 @@ export declare type FetchifyRequestParameters = {
     body: any;
     type: string;
 };
-export declare type FetchData<DataType> = Promise<FetchedData<DataType>>;
+export type FetchData<DataType> = Promise<FetchedData<DataType>>;
 export interface Interceptors {
-    request?: (request: FetchifyRequestParameters) => FetchifyRequestParameters;
+    request?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
     response?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
 }
+export declare function defineConfigs(configs?: Configs): {
+    set: (configs: Configs) => void;
+    getAll: () => Configs;
+    update: (configs: Configs) => void;
+    remove: (key: keyof Configs | (keyof Configs)[]) => void;
+};
+export declare function defineHeaders(headers?: Partial<HeadersInit>): {
+    set: (headers: Partial<HeadersInit>) => void;
+    getAll: () => Partial<HeadersInit>;
+    update: (headers: Partial<HeadersInit>) => void;
+    remove: (key: string | (string)[]) => void;
+};
 export declare const globalConfigs: {
     set: (configs: Configs) => void;
     getAll: () => Configs;
@@ -48,22 +60,26 @@ export declare const globalHeaders: {
     remove: (key: string | (string)[]) => void;
 };
 export declare function setInterceptors({ request, response }: Interceptors): void;
-export declare function GET<Type = any>(route: string, { params, configs, headers, responseType, meta, timeout }?: {
+export declare function GET<Type = any>(route: string, { params, configs, headers, responseType, meta, timeout, requestInterceptor, responseInterceptor }?: {
     params?: Record<string, unknown | any>;
     configs?: Configs;
     headers?: Partial<HeadersInit>;
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
-export declare function HEAD<Type = any>(route: string, { params, configs, headers, meta, timeout }?: {
+export declare function HEAD<Type = any>(route: string, { params, configs, headers, meta, timeout, requestInterceptor, responseInterceptor }?: {
     params?: Record<string, unknown | any>;
     configs?: Configs;
     headers?: Partial<HeadersInit>;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
-export declare function POST<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout }?: {
+export declare function POST<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout, requestInterceptor, responseInterceptor }?: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
@@ -71,8 +87,10 @@ export declare function POST<Type = any>(route: string, { body, params, configs,
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
-export declare function PUT<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout }?: {
+export declare function PUT<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout, requestInterceptor, responseInterceptor }?: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
@@ -80,8 +98,10 @@ export declare function PUT<Type = any>(route: string, { body, params, configs, 
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
-export declare function DELETE<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout }?: {
+export declare function DELETE<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout, requestInterceptor, responseInterceptor }?: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
@@ -89,8 +109,10 @@ export declare function DELETE<Type = any>(route: string, { body, params, config
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
-export declare function PATCH<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout }?: {
+export declare function PATCH<Type = any>(route: string, { body, params, configs, headers, responseType, meta, timeout, requestInterceptor, responseInterceptor }?: {
     body?: any;
     params?: Record<string, unknown | any>;
     configs?: Configs;
@@ -98,6 +120,8 @@ export declare function PATCH<Type = any>(route: string, { body, params, configs
     responseType?: ResponseType;
     meta?: Record<string, any>;
     timeout?: number;
+    responseInterceptor?: (result: FetchResult, requestInit: RequestInit, fetchParams: FetchifyRequestParameters) => Promise<FetchResult>;
+    requestInterceptor?: (request: FetchifyRequestParameters) => Promise<FetchifyRequestParameters>;
 }, abortCallback?: (controller: AbortController) => void): FetchData<Type>;
 declare const fetchify: {
     POST: typeof POST;

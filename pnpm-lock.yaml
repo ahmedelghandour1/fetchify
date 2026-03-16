@@ -49,61 +49,6 @@ importers:
         version: 4.9.5
 
   packages/fetchify:
-    dependencies:
-      '@types/qs':
-        specifier: ^6.9.7
-        version: 6.15.0
-      express:
-        specifier: ^4.17.3
-        version: 4.22.1
-      form-data:
-        specifier: ^4.0.0
-        version: 4.0.5
-      install:
-        specifier: ^0.13.0
-        version: 0.13.0
-      node-fetch:
-        specifier: ^3.2.10
-        version: 3.3.2
-      qs:
-        specifier: ^6.11.2
-        version: 6.15.0
-    devDependencies:
-      '@types/node':
-        specifier: ^17.0.32
-        version: 17.0.45
-      babel-loader:
-        specifier: ^8.2.5
-        version: 8.4.1(@babel/core@7.29.0)(webpack@5.105.4(esbuild@0.14.54))
-      concurrently:
-        specifier: ^7.2.0
-        version: 7.6.0
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      esbuild:
-        specifier: ^0.14.50
-        version: 0.14.54
-      lerna:
-        specifier: ^5.5.4
-        version: 5.6.2(@types/node@17.0.45)(encoding@0.1.13)
-      nodemon:
-        specifier: ^2.0.15
-        version: 2.0.22
-      nx:
-        specifier: 14.8.2
-        version: 14.8.2
-      ts-loader:
-        specifier: ^9.3.0
-        version: 9.5.4(typescript@4.9.5)(webpack@5.105.4(esbuild@0.14.54))
-      ts-node:
-        specifier: ^10.8.0
-        version: 10.9.2(@types/node@17.0.45)(typescript@4.9.5)
-      typescript:
-        specifier: ^4.6.4
-        version: 4.9.5
-
-  packages/fetchify-vite:
     devDependencies:
       '@types/qs':
         specifier: ^6.9.7
@@ -131,7 +76,7 @@ importers:
     dependencies:
       '@elghandour/fetchify':
         specifier: workspace:*
-        version: link:../../../packages/fetchify-vite
+        version: link:../../../packages/fetchify
       webpack:
         specifier: ^5.75.0
         version: 5.105.4(esbuild@0.14.54)(webpack-cli@5.1.4)
@@ -143,7 +88,7 @@ importers:
     dependencies:
       '@elghandour/fetchify':
         specifier: workspace:*
-        version: link:../../../packages/fetchify-vite
+        version: link:../../../packages/fetchify
       webpack:
         specifier: ^5.75.0
         version: 5.105.4(esbuild@0.14.54)(webpack-cli@5.1.4)
@@ -155,7 +100,7 @@ importers:
     dependencies:
       '@elghandour/fetchify':
         specifier: workspace:*
-        version: link:../../../packages/fetchify-vite
+        version: link:../../../packages/fetchify
       express:
         specifier: ^4.18.1
         version: 4.22.1
@@ -164,7 +109,7 @@ importers:
     dependencies:
       '@elghandour/fetchify':
         specifier: workspace:*
-        version: link:../../../packages/fetchify-vite
+        version: link:../../../packages/fetchify
       express:
         specifier: ^4.18.1
         version: 4.22.1
@@ -2128,10 +2073,6 @@ packages:
   inquirer@8.2.7:
     resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
     engines: {node: '>=12.0.0'}
-
-  install@0.13.0:
-    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
-    engines: {node: '>= 0.10'}
 
   interpret@3.1.1:
     resolution: {integrity: sha512-6xwYfHbajpoF0xLW+iwLkhwgvLoZDfjYfoFNu8ftMoXINzwuymNLd9u/KmwtdT2GbR+/Cz66otEGEVVUHX9QLQ==}
@@ -5982,8 +5923,6 @@ snapshots:
       wrap-ansi: 6.2.0
     transitivePeerDependencies:
       - '@types/node'
-
-  install@0.13.0: {}
 
   interpret@3.1.1: {}
 

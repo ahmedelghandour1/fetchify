@@ -1,23 +1,23 @@
 /* eslint-disable import/prefer-default-export */
 export const isBrowser = (): boolean => typeof window === 'object';
-const isObject = <Type>(arg: Type):boolean => arg && typeof arg === 'object' && !Array.isArray(Array);
+const isObject = <Type>(arg: Type): boolean => arg && typeof arg === 'object' && !Array.isArray(Array);
 
-const isEmpty = <Type>(arg: Type):boolean => {
+const isEmpty = <Type>(arg: Type): boolean => {
   if (!isObject(arg)) throw Error('type should be object!');
-  const key = Object.keys(arg);
+  const key = Object.keys(arg as Record<string, unknown>);
   return !key.length;
 };
 
 function isValidQeuryParam(
   param: string | number | boolean |
-  Array<string | number | boolean>,
+    Array<string | number | boolean>,
 ) {
   if (param === undefined || param === null) return false;
 
   if (typeof param === 'string'
-  || typeof param === 'bigint'
-  || typeof param === 'number'
-  || typeof param === 'boolean') {
+    || typeof param === 'bigint'
+    || typeof param === 'number'
+    || typeof param === 'boolean') {
     return true;
   }
 
@@ -75,4 +75,4 @@ export function replaceParamsInString(input: string, params: Record<string, stri
 
 
 
-export function nop() {}
+export function nop() { }
